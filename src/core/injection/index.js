@@ -1,5 +1,5 @@
 var ipc = require('electron').ipcRenderer
-var mods = require('../mods')
+var mods = require('../../mods')
 
 ipc.on('init', function() {
   window.$ = require('jquery');

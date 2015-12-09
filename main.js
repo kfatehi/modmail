@@ -1,17 +1,12 @@
 'use strict';
 const electron = require('electron');
 const app = electron.app;  // Module to control application life.
-const BrowserWindow = electron.BrowserWindow;  // Module to create native browser window.
 const Menu = electron.Menu;
 const shell = electron.shell;
-const mods = require('./src/mods');
+const core = require('./src/core/main-process');
 
 // Report crashes to our server.
 electron.crashReporter.start();
-
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
-let mainWindow;
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function() {
@@ -25,26 +20,7 @@ app.on('window-all-closed', function() {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 app.on('ready', function() {
-  // Create the browser window.
-  mainWindow = new BrowserWindow({width: 980, height: 650});
-
-  // and load the index.html of the app.
-  mainWindow.loadURL(`file://${__dirname}/index.html`);
-
-  // Open the DevTools.
-  //mainWindow.webContents.openDevTools();
-
-  // here we load modules we want to use
-  // requireMain means we are requiring the main-process component
-  mods.requireMain('gpg').init();
-
-  // Emitted when the window is closed.
-  mainWindow.on('closed', function() {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
-    mainWindow = null;
-  });
+  core.init();
 
   // Create the Application's main menu
   let template = [{
