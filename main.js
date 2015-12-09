@@ -2,17 +2,9 @@
 const electron = require('electron');
 const app = electron.app;  // Module to control application life.
 const BrowserWindow = electron.BrowserWindow;  // Module to create native browser window.
-const ipcMain = electron.ipcMain;
-var Promise = require('bluebird')
-const getSecrets = Promise.promisify(require(`${process.env.HOME}/.gpg-secret.js`))
-const openpgp = require('openpgp');
-
-function decrypt(pgpMessage, key, passphrase) {
-  var privateKey = openpgp.key.readArmored(key).keys[0];
-  privateKey.decrypt(passphrase);
-  pgpMessage = openpgp.message.readArmored(pgpMessage);
-  return openpgp.decryptMessage(privateKey, pgpMessage)
-}
+const Menu = electron.Menu;
+const shell = electron.shell;
+const mods = require('./src/mods');
 
 // Report crashes to our server.
 electron.crashReporter.start();
@@ -34,7 +26,7 @@ app.on('window-all-closed', function() {
 // initialization and is ready to create browser windows.
 app.on('ready', function() {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 800, height: 600});
+  mainWindow = new BrowserWindow({width: 980, height: 650});
 
   // and load the index.html of the app.
   mainWindow.loadURL(`file://${__dirname}/index.html`);
@@ -42,15 +34,9 @@ app.on('ready', function() {
   // Open the DevTools.
   //mainWindow.webContents.openDevTools();
 
-  getSecrets().spread(function(key, passphrase) {
-    ipcMain.on('decrypt-request', function(event, ciphertext) {
-      decrypt(ciphertext, key, passphrase).then(function(value) {
-        event.sender.send("decrypt-result", { plaintext: value })
-      }).catch(function(err) {
-        event.sender.send("decrypt-result", { error: err.message })
-      });
-    });
-  });
+  // here we load modules we want to use
+  // requireMain means we are requiring the main-process component
+  mods.requireMain('gpg').init();
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function() {
@@ -59,4 +45,95 @@ app.on('ready', function() {
     // when you should delete the corresponding element.
     mainWindow = null;
   });
+
+  // Create the Application's main menu
+  let template = [{
+    label: "Modmail",
+    submenu: [
+      { label: "About Modmail", selector: "orderFrontStandardAboutPanel:" },
+      { type: "separator" },
+      { label: "Quit", accelerator: "Command+Q", click: function() { app.quit(); }}
+    ]}, {
+      label: "Edit",
+      submenu: [
+        { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
+        { label: "Redo", accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
+        { type: "separator" },
+        { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
+        { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
+        { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
+        { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" }
+      ]},
+      {
+      label: 'View',
+      submenu: [
+        {
+          label: 'Reload',
+          accelerator: 'CmdOrCtrl+R',
+          click: function(item, focusedWindow) {
+            if (focusedWindow)
+              focusedWindow.reload();
+          }
+        },
+        {
+          label: 'Toggle Full Screen',
+          accelerator: (function() {
+            if (process.platform == 'darwin')
+              return 'Ctrl+Command+F';
+            else
+              return 'F11';
+          })(),
+          click: function(item, focusedWindow) {
+            if (focusedWindow)
+              focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
+          }
+        },
+        {
+          label: 'Toggle Developer Tools',
+          accelerator: (function() {
+            if (process.platform == 'darwin')
+              return 'Alt+Command+I';
+            else
+              return 'Ctrl+Shift+I';
+          })(),
+          click: function(item, focusedWindow) {
+            if (focusedWindow)
+              focusedWindow.toggleDevTools();
+          }
+        },
+      ]
+    },
+    {
+      label: 'Window',
+      role: 'window',
+      submenu: [
+        {
+          label: 'Minimize',
+          accelerator: 'CmdOrCtrl+M',
+          role: 'minimize'
+        },
+        {
+          label: 'Close',
+          accelerator: 'CmdOrCtrl+W',
+          role: 'close'
+        },
+      ]
+    },
+    {
+      label: 'Help',
+      role: 'help',
+      submenu: [
+        {
+          label: 'Github Repository',
+          click: function() { shell.openExternal('https://github.com/kfatehi/modmail') }
+        },
+        {
+          label: 'Search Issues',
+          click: function() { shell.openExternal('https://github.com/kfatehi/modmail/issues') }
+        }
+      ]
+    },
+  ];
+
+  Menu.setApplicationMenu(Menu.buildFromTemplate(template));
 });
