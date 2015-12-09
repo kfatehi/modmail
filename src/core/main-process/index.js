@@ -15,12 +15,11 @@ module.exports.init = function() {
   mainWindow.loadURL(`file://${__dirname}/../../../index.html`);
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  //mainWindow.webContents.openDevTools();
 
   // here we load modules we want to use
   // requireMain means we are requiring the main-process component
   mods.requireMain('gpg').init();
-
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function() {

@@ -6,7 +6,7 @@ webview.addEventListener('page-title-updated', function(e) {
 });
 
 webview.addEventListener("dom-ready", function() {
-  webview.openDevTools();
+  //webview.openDevTools();
 
   // initialize the embedder component of each module
   mods.requireEmbedder('gpg').init(webview);
