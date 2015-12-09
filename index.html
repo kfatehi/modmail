@@ -2,12 +2,11 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Hello World!</title>
+    <title>Loading...</title>
+    <link rel="stylesheet" href="style.css" type="text/stylesheet" />
   </head>
   <body>
-    <h1>Hello World!</h1>
-    We are using node <script>document.write(process.versions.node)</script>,
-    Chrome <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>.
+    <webview id="gmail" src="https://mail.google.com" preload="src/injection/index.js"></webview>
+    <script src="src/embedder/index.js" type="text/javascript" charset="utf-8"></script>
   </body>
 </html>

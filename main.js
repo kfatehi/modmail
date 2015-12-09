@@ -2,6 +2,17 @@
 const electron = require('electron');
 const app = electron.app;  // Module to control application life.
 const BrowserWindow = electron.BrowserWindow;  // Module to create native browser window.
+const ipcMain = electron.ipcMain;
+var Promise = require('bluebird')
+const getSecrets = Promise.promisify(require(`${process.env.HOME}/.gpg-secret.js`))
+const openpgp = require('openpgp');
+
+function decrypt(pgpMessage, key, passphrase) {
+  var privateKey = openpgp.key.readArmored(key).keys[0];
+  privateKey.decrypt(passphrase);
+  pgpMessage = openpgp.message.readArmored(pgpMessage);
+  return openpgp.decryptMessage(privateKey, pgpMessage)
+}
 
 // Report crashes to our server.
 electron.crashReporter.start();
@@ -29,7 +40,17 @@ app.on('ready', function() {
   mainWindow.loadURL(`file://${__dirname}/index.html`);
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  //mainWindow.webContents.openDevTools();
+
+  getSecrets().spread(function(key, passphrase) {
+    ipcMain.on('decrypt-request', function(event, ciphertext) {
+      decrypt(ciphertext, key, passphrase).then(function(value) {
+        event.sender.send("decrypt-result", { plaintext: value })
+      }).catch(function(err) {
+        event.sender.send("decrypt-result", { error: err.message })
+      });
+    });
+  });
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function() {
