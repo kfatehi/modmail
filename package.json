@@ -6,7 +6,7 @@
   "scripts": {
     "start": "electron main.js",
     "watch": "webpack --config webpack.config.js",
-    "build": "electron-packager . GPGmail --platform=darwin --arch=x64 --version=0.35.0"
+    "build": "electron-packager . Modmail --platform=darwin --arch=x64 --version=0.35.0"
   },
   "repository": {
     "type": "git",
