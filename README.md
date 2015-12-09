@@ -5,6 +5,12 @@ This is a Gmail wrapper.
 Features:
 * Decrypt GPG emails
 
+Wishlist:
+* Encrypt emails
+* Markdown support
+* Encrypted Attachments
+* Multiple Gmail Accounts
+
 ## Requirements
 
 You need to create a javascript file `$HOME/.gpg-secret.js` similar to this example:
