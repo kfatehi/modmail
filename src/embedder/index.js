@@ -7,7 +7,6 @@ webview.addEventListener('page-title-updated', function(e) {
 
 webview.addEventListener('ipc-message', function(event) {
   ipcRenderer.send(event.channel, event.args[0])
-  console.log('renderer forwarded ipc from guest to main process', event);
 });
 
 ipcRenderer.on('decrypt-result', function(event, arg) {
