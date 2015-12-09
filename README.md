@@ -35,7 +35,7 @@ You need to create a javascript file `$HOME/.gpg-secret.js` similar to this exam
 
 Every module is composed of 3 components: **main-process**, **embedder**, and **injection**
 
-Gmail itself runs in an electron `<webview>` embedder by the core **embedder**. See `index.html` to view the embedder's DOM.
+Gmail itself runs in an electron `<webview>` embedded by the core **embedder**. See `index.html` to view the embedder's DOM.
 
 The webview is preloaded with the core **injection** which subsequently injects each module's injection component.
 
@@ -53,6 +53,7 @@ PR your mods back here so everyone can benefit!
 
 * Markdown support
 * Multiple account support
+* Per-user mod config (e.g. not everyone wishes to use GPG)
 
 ## To Use
 
@@ -60,9 +61,9 @@ To clone and run this repository you'll need [Git](https://git-scm.com) and [Nod
 
 ```bash
 # Clone this repository
-$ git clone https://github.com/atom/electron-quick-start
+$ git clone https://github.com/kfatehi/modmail
 # Go into the repository
-$ cd electron-quick-start
+$ cd modmail
 # Install dependencies and run the app
 $ npm install && npm start
 ```
