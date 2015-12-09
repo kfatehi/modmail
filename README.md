@@ -1,16 +1,25 @@
-# electron-quick-start
+# gpg-gmail-electron
 
-**Clone and run for a quick way to see an Electron in action.**
+This is a Gmail wrapper.
 
-This is a minimal Electron application based on the [Quick Start Guide](http://electron.atom.io/docs/latest/tutorial/quick-start) within the Electron documentation.
+Features:
+* Decrypt GPG emails
 
-A basic Electron application needs just these files:
+## Requirements
 
-- `index.html` - A web page to render.
-- `main.js` - Starts the app and creates a browser window to render HTML.
-- `package.json` - Points to the app's main file and lists its details and dependencies.
+You need to create a javascript file `$HOME/.gpg-secret.js` similar to this example:
 
-You can learn more about each of these components within the [Quick Start Guide](http://electron.atom.io/docs/latest/tutorial/quick-start).
+    var spawn = require("child_process").spawn;
+
+    var name = 'Keyvan Fatehi';
+    var passphrase = "my super secret passphrase i unfortunately put in a file!"
+
+    // callback sig: (error, [key, passphrase])
+    module.exports = function(cb) {
+      spawn('gpg', ['--export-secret-key', '-a', name]).stdout.on('data', function(buf) {
+        cb(null, [buf.toString(), passphrase]);
+      });
+    }
 
 ## To Use
 
