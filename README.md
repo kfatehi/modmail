@@ -10,6 +10,7 @@ Configuration is done by a Javascript file in your Home directory. Example:
 
 ```js
 module.exports = {
+  // setup your tabs... one for each account.
   "accounts": [{
     "label": "Personal"
   },{
