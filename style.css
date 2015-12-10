@@ -1,7 +1,41 @@
-webview {
+body {
+  background-color: #F5F5F5
+}
+
+.gmail {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
   top: 32px; /* leave some room for the tab bar */
+  z-index: 1;
+}
+
+.gmail.active {
+  z-index: 9;
+}
+
+.tabs {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right; 0;
+  bottom: 32px;
+}
+
+.tab {
+  width: 200px;
+  height: 32px;
+  display: inline-block;
+  background-color: #ccc;
+  /* text stuff */
+  line-height: 30px;
+  font-size: 18px;
+  font-family: helvetica;
+  color: #333;
+  text-align: center;
+}
+
+.tab.active {
+  background-color: #eee;
 }
