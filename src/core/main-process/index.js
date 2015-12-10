@@ -9,7 +9,11 @@ let mainWindow;
 
 module.exports.init = function() {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 980, height: 650});
+  mainWindow = new BrowserWindow({
+    icon: `${__dirname}/../../../images/logo.png`,
+    width: 980,
+    height: 650
+  });
 
   // and load the index.html of the app.
   mainWindow.loadURL(`file://${__dirname}/../../../index.html`);
