@@ -4,6 +4,20 @@ This is a Gmail wrapper with extreme moddability. I built it in reaction to mail
 
 Anyone with some javascript skills can create their own mods by creating the appopriate files under `src/mods`. See the `gpg` module for examples.
 
+## Config
+
+Configuration is done by a Javascript file in your Home directory. Example:
+
+```js
+module.exports = {
+  "accounts": [{
+    "label": "Personal"
+  },{
+    "label": "Business"
+  }]
+}
+```
+
 ## Modules
 
 ### gpg
