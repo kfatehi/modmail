@@ -70,9 +70,13 @@ Gmail itself runs in an electron `<webview>` embedded by the core **embedder**. 
 
 The webview is preloaded with the core **injection** which subsequently injects each module's injection component.
 
-You can require modules and do most things in each type of environment, in practice though, we find logical places to put certain logic.
+Most of the time you can do all the work in the injection component. Sometimes, this is unsafe. In these cases, we must use the IPC facilities provided by Electron.
 
-As a result, we need to communicate between these components. Electron makes this easy by providing IPC facilities all the way through. You can see examples of this in the `gpg` mod which actually sends ciphertext through the embedder to the main process where it is actually decrypted into plaintext. The plaintext is then IPC'd through the embedder and into the injection where it replaces the actual text on the DOM. We do this because we don't want our private key anywhere near Gmail's code, so we bring the ciphertext to it instead of the other way around.
+For example, the `gpg` mod uses IPC to sends ciphertext to the embedder where it is then relayed by IPC to the main process.
+
+The main process attempts to decrypt the ciphertext and then IPC's back the way it came until it replaces the DOM.
+
+We do this because we don't want the private key anywhere near the wild web code. Using IPC, we can bring the ciphertext to the key instead of bringing the key to the ciphertext where it might be at risk.
 
 ## Adding a Module
 
