@@ -32,13 +32,21 @@ function modPath(mod) {
   }
 }
 
+// this value scopes IPC calls of this mod and account combination.
+// it's necessary because all main-process components for all mods
+// are loaded into the same (main) process.
+function genIpcPrefix(account, mod) {
+  return `${account.id}.${mod.id}.`
+}
+
 function initMain() {
   config.accounts.forEach((account) => {
     if (account.mods) {
       account.mods.forEach((mod) => {
         // here we load modules we want to use
         // requireMain means we are requiring the main-process component
-        requireMain(mod).init(mod.config);
+        let prefix = genIpcPrefix(account, mod);
+        requireMain(mod).init(prefix, mod.config);
         console.log(`${account.id}: ${mod.id} initialized main-process`);
       })
     }
@@ -49,7 +57,8 @@ function initEmbedder(account, webview) {
   if (account.mods) {
     account.mods.forEach(function(mod) {
       // initialize the embedder component of each module
-      requireEmbedder(mod).init(webview);
+      let prefix = genIpcPrefix(account, mod);
+      requireEmbedder(mod).init(prefix, webview);
       console.log(`${account.id}: ${mod.id} initialized embedder`);
     })
   }
