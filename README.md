@@ -82,6 +82,10 @@ We do this because we don't want the private key anywhere near the wild web code
 
 To develop your own module, add it to your config using the `path` key. Make sure to set an `id` key too so that your ipc prefix is setup correctly. See the `gpg` module in the `src` directory for examples of each component.
 
+As you edit your embedder and injection components, you can hit CMD-R (Ctrl-R on Windows and Linux) to reload! You can also open the inspector (see the View menu for the hotkey) to see your embedder and injection developer tools!
+
+If you edit any main-process code, though, you will need to restart the process, but this should be pretty rare as most of the brute force is in the injection code.
+
 PR your mods back here so everyone can benefit!
 
 ## To Use
