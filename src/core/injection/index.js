@@ -1,10 +1,14 @@
-var ipc = require('electron').ipcRenderer
-var mods = require('../../mods')
+'use strict';
+const ipc = require('electron').ipcRenderer
+const mods = require('../../mods')
+const config = require('./src/config');
 
 ipc.on('init', function() {
   window.$ = require('jquery');
   window.gmail = require('./gmail')(window.$)
 
-  // now we load injection component of our modules
-  mods.requireInjection('gpg').init()
+  config.mods.forEach(function(mod) {
+    // now we load injection component of our modules
+    mods.requireInjection(mod).init()
+  })
 });

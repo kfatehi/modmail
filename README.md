@@ -10,12 +10,16 @@ Configuration is done by a Javascript file in your Home directory. Example:
 
 ```js
 module.exports = {
-  // setup your tabs... one for each account.
+  // setup the tabs, each one persists its own session
   "accounts": [{
     "label": "Personal"
   },{
     "label": "Business"
-  }]
+  }],
+  // choose the mods you'd like to use
+  "mods": [
+    "gpg"
+  ]
 }
 ```
 

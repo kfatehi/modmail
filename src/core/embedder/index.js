@@ -2,74 +2,89 @@
 const mods = require('./src/mods');
 const config = require('./src/config');
 const preload = "src/core/injection/index.js";
+const ipcRenderer = require('electron').ipcRenderer;
 window.$ = require('jquery');
-
-let embeds = [];
 
 function init() {
   config.accounts.forEach(function(account) {
-    embeds.push({
-      label: account.label,
-      tab: createTab(account.label),
-      webview: createWebview(account.label)
+    let tab = createTab(account);
+
+    let webview = createWebview(account).get(0);
+
+    $('.tabs').append(tab);
+
+    tab.click(function() {  switchTo(account) });
+
+    $('.webviews').append(webview);
+    webview.addEventListener('page-title-updated', function(e) {
+      $('title').text(e.title);
     });
+
+    webview.addEventListener("dom-ready", function() {
+      //webview.openDevTools();
+      //
+      config.mods.forEach(function(mod) {
+        // initialize the embedder component of each module
+        mods.requireEmbedder(mod).init(webview);
+      })
+
+      // then send the init signal
+      webview.send('init');
+    });
+
   })
   setTimeout(function() {
-    switchTo(config.accounts[0].label);
+    switchTo(config.accounts[0]);
   }, 0);
+
+  ipcRenderer.on('toggle-webview-inspector', toggleWebviewDevTools)
 }
 
-// TODO reveal/hide tab
-function switchTo(label) {
+function switchTo(account) {
   // highlight the tab
   $('.tab').removeClass('active');
-  $(`.tab#tab-${label}`).addClass('active');
+  $(`.tab#tab-${account.id}`).addClass('active');
   // surface the webview
   $('.gmail').removeClass('active');
-  let webview = $(`.gmail#gmail-${label}`).addClass('active').get(0);
+  let webview = $(`.gmail#gmail-${account.id}`).addClass('active').get(0);
   // set title to that of surfaced webview
   $('title').text(webview.getTitle());
 }
 
-window.switchTo = switchTo
-
-// TODO create tab
-function createTab(label) {
+function createTab(account) {
+  let label = $('<span>').addClass('label').text(account.label);
   let tab = $('<div>')
-  tab.attr('id', `tab-${label}`)
-  tab.addClass('tab')
-  tab.text(label);
-  $('.tabs').append(tab);
-  tab.click(function() {
-    switchTo(label);
-  });
+  .attr('id', `tab-${account.id}`)
+  .addClass('tab')
+  .append(label)
   return tab;
 }
 
-function createWebview(label) {
-  let id = `gmail-${label}`;
-  let src = "https://mail.google.com";
-  let attrs = `class="gmail" id="${id}" src="${src}" preload="${preload}"`;
-  let html = `<webview ${attrs}></webview>`;
-
-  $('.webviews').append(html);
-  let webview = document.getElementById(id)
-
-  webview.addEventListener('page-title-updated', function(e) {
-    $('title').text(e.title);
-  });
-
-  webview.addEventListener("dom-ready", function() {
-    //webview.openDevTools();
-
-    // initialize the embedder component of each module
-    mods.requireEmbedder('gpg').init(webview);
-
-    // then send the init signal
-    webview.send('init');
-  });
-
+function createWebview(account) {
+  let webview = $('<webview>')
+  .addClass('gmail')
+  .attr('id', `gmail-${account.id}`)
+  .attr('src', "https://mail.google.com")
+  .attr('preload', preload)
+  .attr('partition', `persist:${account.id}`)
   return webview;
+}
+
+function toggleWebviewDevTools() {
+  $('webview.gmail').each((i, el) => {
+    if ($(el).hasClass('active')) {
+      if (el.isDevToolsOpened()) {
+        el.closeDevTools()
+      } else {
+        el.openDevTools()
+      }
+    } else {
+      if (el.isDevToolsOpened()) {
+        el.closeDevTools();
+        return false;
+      }
+    }
+  });
 }
 
 init();

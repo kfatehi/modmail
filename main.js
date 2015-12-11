@@ -73,8 +73,10 @@ app.on('ready', function() {
               return 'Ctrl+Shift+I';
           })(),
           click: function(item, focusedWindow) {
-            if (focusedWindow)
+            if (focusedWindow) {
               focusedWindow.toggleDevTools();
+              focusedWindow.send('toggle-webview-inspector');
+            }
           }
         },
       ]
