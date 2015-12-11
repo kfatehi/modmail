@@ -2,6 +2,8 @@
 
 This is a Gmail wrapper with extreme moddability. It's a lot like Mailplane except that it's open source, crossplatform, and built with Electron.
 
+![](https://raw.githubusercontent.com/kfatehi/modmail/master/images/logo.png)
+
 ## Features
 
 * Modding engine
