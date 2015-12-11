@@ -1,14 +1,14 @@
 'use strict';
 const ipc = require('electron').ipcRenderer
 const mods = require('../../mods')
-const config = require('./src/config');
 
-ipc.on('init', function() {
+ipc.on('init-injection', function(event, account) {
   window.$ = require('jquery');
   window.gmail = require('./gmail')(window.$)
 
-  config.mods.forEach(function(mod) {
+  account.mods.forEach(function(mod) {
     // now we load injection component of our modules
     mods.requireInjection(mod).init()
+    console.log(`${account.id}: ${mod.id} initialized injection`);
   })
 });

@@ -19,13 +19,13 @@ module.exports.init = function() {
   // and load the index.html of the app.
   mainWindow.loadURL(`file://${__dirname}/../../../index.html`);
 
-  // Open the DevTools.
-  //mainWindow.webContents.openDevTools();
-
-  config.mods.forEach(function(mod) {
-    // here we load modules we want to use
-    // requireMain means we are requiring the main-process component
-    mods.requireMain(mod).init();
+  config.accounts.forEach((account) => {
+    account.mods.forEach((mod) => {
+      // here we load modules we want to use
+      // requireMain means we are requiring the main-process component
+      mods.requireMain(mod).init();
+      console.log(`${account.id}: ${mod.id} initialized main-process`);
+    })
   })
 
   // Emitted when the window is closed.

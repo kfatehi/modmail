@@ -11,19 +11,26 @@ Configuration is done by a Javascript file in your Home directory. Example:
 ```js
 module.exports = {
   // setup the tabs, each one persists its own session
-  "accounts": [{
-    "label": "Personal"
+  // each one has its own mods
+  accounts: [{
+    id: 'personal',
+    label: "Personal",
+    mods: [
+      { id: 'gpg' }
+    ]
   },{
-    "label": "Business"
+    id: 'business',
+    label: "Business",
+    mods: [
+      // you can also develop your own mods, just specify the path
+      // development is easy. use the Reload and Inspector features to build mods quickly
+      { id: 'my-mod', path: 'path/to/project' }
+    ]
   }],
-  // choose the mods you'd like to use
-  "mods": [
-    "gpg"
-  ]
 }
 ```
 
-## Modules
+## Included Modules
 
 ### gpg
 
@@ -34,21 +41,23 @@ Wishlist:
 * Encrypt emails
 * Encrypted Attachments
 
-#### Secret Config
+**Secret File**
 
 You need to create a javascript file `$HOME/.gpg-secret.js` similar to this example:
 
-    var spawn = require("child_process").spawn;
+```js
+var spawn = require("child_process").spawn;
 
-    var name = 'Keyvan Fatehi';
-    var passphrase = "my super secret passphrase i unfortunately put in a file!"
+var name = 'Keyvan Fatehi';
+var passphrase = "my super secret passphrase i unfortunately put in a file!"
 
-    // callback sig: (error, [key, passphrase])
-    module.exports = function(cb) {
-      spawn('gpg', ['--export-secret-key', '-a', name]).stdout.on('data', function(buf) {
-        cb(null, [buf.toString(), passphrase]);
-      });
-    }
+// callback sig: (error, [key, passphrase])
+module.exports = function(cb) {
+  spawn('gpg', ['--export-secret-key', '-a', name]).stdout.on('data', function(buf) {
+    cb(null, [buf.toString(), passphrase]);
+  });
+}
+```
 
 ## Module Anatomy
 
@@ -64,15 +73,13 @@ As a result, we need to communicate between these components. Electron makes thi
 
 ## Adding a Module
 
-To add a module, visit the **main-process**, **embedder**, and **injection** files for core -- you will see how modules are initialized. Simply copy and paste the one-liner on each file to load each component for your custom mod.
+To add a module, add it to your config using the `path` key. See the `gpg` module in the `src` directory for an example.
 
 PR your mods back here so everyone can benefit!
 
 ## Wishlist
 
 * Markdown support
-* Multiple account support
-* Per-user mod config (e.g. not everyone wishes to use GPG)
 
 ## To Use
 

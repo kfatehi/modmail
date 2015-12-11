@@ -16,20 +16,18 @@ function init() {
     tab.click(function() {  switchTo(account) });
 
     $('.webviews').append(webview);
-    webview.addEventListener('page-title-updated', function(e) {
+    webview.addEventListener('page-title-updated', (e) => {
       $('title').text(e.title);
     });
 
-    webview.addEventListener("dom-ready", function() {
-      //webview.openDevTools();
-      //
-      config.mods.forEach(function(mod) {
+    webview.addEventListener("dom-ready", () => {
+      account.mods.forEach(function(mod) {
         // initialize the embedder component of each module
         mods.requireEmbedder(mod).init(webview);
+        console.log(`${account.id}: ${mod.id} initialized embedder`);
       })
-
       // then send the init signal
-      webview.send('init');
+      webview.send('init-injection', account);
     });
 
   })
