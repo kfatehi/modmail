@@ -22,7 +22,7 @@ module.exports = {
     id: 'personal',
     label: "Personal",
     mods: [
-      { id: 'gpg' }
+      { id: 'gpg', config: { /* modules can take configs */ } }
     ]
   },{
     id: 'business',
@@ -47,21 +47,20 @@ Wishlist:
 * Encrypt emails
 * Encrypted Attachments
 
-**Secret File**
-
-You need to create a javascript file `$HOME/.gpg-secret.js` similar to this example:
+This module requires a **config**. Example module block:
 
 ```js
-var spawn = require("child_process").spawn;
-
-var name = 'Keyvan Fatehi';
-var passphrase = "my super secret passphrase i unfortunately put in a file!"
-
-// callback sig: (error, [key, passphrase])
-module.exports = function(cb) {
-  spawn('gpg', ['--export-secret-key', '-a', name]).stdout.on('data', function(buf) {
-    cb(null, [buf.toString(), passphrase]);
-  });
+{
+  id: 'gpg',
+  config: {
+    getSecrets: (cb) => {
+      let spawn = require("child_process").spawn;
+      let passphrase = "my secret phrase";
+      let email = "example@gmail.com";
+      spawn('/usr/local/bin/gpg', ['--export-secret-key', '-a', email])
+      .stdout.on('data', (buf) => { cb(null, [buf.toString(), passphrase]) });
+    }
+  }
 }
 ```
 
