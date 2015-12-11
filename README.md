@@ -2,8 +2,6 @@
 
 This is a Gmail wrapper with extreme moddability. It's a lot like Mailplane except that it's open source, crossplatform, and built with Electron.
 
-Anyone with some javascript knowledge can create their own mods by creating the appopriate files under `src/mods`. See the `gpg` module for examples.
-
 ## Features
 
 * Modding engine
