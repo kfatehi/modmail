@@ -1,17 +1,23 @@
 # Modmail
 
-This is a Gmail wrapper with extreme moddability. I built it in reaction to mailplane's decision to rest on their laurels.
+This is a Gmail wrapper with extreme moddability. It's a lot like Mailplane except that it's open source, crossplatform, and built with Electron.
 
-Anyone with some javascript skills can create their own mods by creating the appopriate files under `src/mods`. See the `gpg` module for examples.
+Anyone with some javascript knowledge can create their own mods by creating the appopriate files under `src/mods`. See the `gpg` module for examples.
+
+## Features
+
+* Modding engine
+* Multiple accounts
 
 ## Config
 
-Configuration is done by a Javascript file in your Home directory. Example:
+Modmail expects `~/.modmail.config.js` to exist with following semantics:
 
 ```js
 module.exports = {
-  // setup the tabs, each one persists its own session
-  // each one has its own mods
+  // set up each account, which will run in its own tab with the label `label`
+  // each web session persists using the `id` property, so make it unique and without special characters or spaces
+  // each account can be independently configured with its own independent set of `mods`
   accounts: [{
     id: 'personal',
     label: "Personal",
@@ -76,10 +82,6 @@ As a result, we need to communicate between these components. Electron makes thi
 To add a module, add it to your config using the `path` key. See the `gpg` module in the `src` directory for an example.
 
 PR your mods back here so everyone can benefit!
-
-## Wishlist
-
-* Markdown support
 
 ## To Use
 

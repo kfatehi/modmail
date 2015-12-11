@@ -1,12 +1,13 @@
 {
-  "name": "electron-quick-start",
+  "name": "modmail-app",
   "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "description": "Extremely moddable Gmail",
   "main": "main.js",
   "scripts": {
     "start": "electron main.js",
-    "watch": "webpack --config webpack.config.js",
-    "build": "electron-packager . Modmail --platform=darwin --arch=x64 --version=0.35.0"
+    "build-mac": "electron-packager . Modmail --platform=darwin --arch=x64 --version=0.35.0 --icon images/logo.icns",
+    "build-windows": "electron-packager . Modmail --platform=win32 --arch=x64 --version=0.35.0 --icon images/logo.ico",
+    "build-linux": "electron-packager . Modmail --platform=linux --arch=x64 --version=0.35.0"
   },
   "repository": {
     "type": "git",
@@ -26,7 +27,6 @@
   "homepage": "https://github.com/atom/electron-quick-start#readme",
   "devDependencies": {
     "electron-prebuilt": "^0.35.0",
-    "webpack": "^1.12.9"
   },
   "dependencies": {
     "bluebird": "^3.0.6",
