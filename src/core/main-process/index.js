@@ -2,7 +2,6 @@
 const electron = require('electron');
 const BrowserWindow = electron.BrowserWindow;  // Module to create native browser window.
 const mods = require('../../mods');
-const config = require('../../config');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -19,14 +18,7 @@ module.exports.init = function() {
   // and load the index.html of the app.
   mainWindow.loadURL(`file://${__dirname}/../../../index.html`);
 
-  config.accounts.forEach((account) => {
-    account.mods.forEach((mod) => {
-      // here we load modules we want to use
-      // requireMain means we are requiring the main-process component
-      mods.requireMain(mod).init();
-      console.log(`${account.id}: ${mod.id} initialized main-process`);
-    })
-  })
+  mods.initializeModComponents('main-process')
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function() {

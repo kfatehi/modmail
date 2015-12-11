@@ -21,11 +21,9 @@ function init() {
     });
 
     webview.addEventListener("dom-ready", () => {
-      account.mods.forEach(function(mod) {
-        // initialize the embedder component of each module
-        mods.requireEmbedder(mod).init(webview);
-        console.log(`${account.id}: ${mod.id} initialized embedder`);
-      })
+
+      mods.initializeModComponents('embedder', [account, webview])
+
       // then send the init signal
       webview.send('init-injection', account);
     });

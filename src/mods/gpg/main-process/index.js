@@ -6,7 +6,8 @@ const ipcMain = electron.ipcMain;
 const dialog = electron.dialog;
 const secretsFilePath = `${process.env.HOME}/.gpg-secret.js`;
 
-module.exports.init = function() {
+module.exports.init = function(config) {
+  const getSecrets = Promise.promisify(config.getSecrets);
   getSecrets().spread(function(key, passphrase) {
     ipcMain.on('decrypt-request', function(event, ciphertext) {
       decrypt(ciphertext, key, passphrase).then(function(value) {
@@ -26,16 +27,4 @@ function decrypt(pgpMessage, key, passphrase) {
   privateKey.decrypt(passphrase);
   pgpMessage = openpgp.message.readArmored(pgpMessage);
   return openpgp.decryptMessage(privateKey, pgpMessage)
-}
-
-function getSecrets() {
-  return new Promise(function(resolve, reject) {
-    let secretFunc;
-    try {
-      secretFunc = require(secretsFilePath)
-    } catch (e) {
-      throw new Error('Missing secrets file. See README for more information.');
-    }
-    resolve(Promise.promisify(secretFunc)())
-  });
 }

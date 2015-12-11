@@ -5,9 +5,9 @@
   "main": "main.js",
   "scripts": {
     "start": "electron main.js",
-    "build-mac": "electron-packager . Modmail --platform=darwin --arch=x64 --version=0.35.0 --icon images/logo.icns",
-    "build-windows": "electron-packager . Modmail --platform=win32 --arch=x64 --version=0.35.0 --icon images/logo.ico",
-    "build-linux": "electron-packager . Modmail --platform=linux --arch=x64 --version=0.35.0"
+    "build-mac": "electron-packager . Modmail --platform=darwin --arch=x64 --version=0.35.4 --icon images/logo.icns",
+    "build-windows": "electron-packager . Modmail --platform=win32 --arch=x64 --version=0.35.4 --icon images/logo.ico",
+    "build-linux": "electron-packager . Modmail --platform=linux --arch=x64 --version=0.35.4"
   },
   "repository": {
     "type": "git",
@@ -26,11 +26,10 @@
   },
   "homepage": "https://github.com/atom/electron-quick-start#readme",
   "devDependencies": {
-    "electron-prebuilt": "^0.35.0",
+    "electron-prebuilt": "^0.35.4"
   },
   "dependencies": {
     "bluebird": "^3.0.6",
-    "electron-prebuilt": "^0.35.4",
     "jquery": "^2.1.4",
     "lodash": "^3.10.1",
     "openpgp": "^1.3.0"
