@@ -78,9 +78,9 @@ The main process attempts to decrypt the ciphertext and then IPC's back the way 
 
 We do this because we don't want the private key anywhere near the wild web code. Using IPC, we can bring the ciphertext to the key instead of bringing the key to the ciphertext where it might be at risk.
 
-## Adding a Module
+## Developing Modules
 
-To add a module, add it to your config using the `path` key. See the `gpg` module in the `src` directory for an example.
+To develop your own module, add it to your config using the `path` key. Make sure to set an `id` key too so that your ipc prefix is setup correctly. See the `gpg` module in the `src` directory for examples of each component.
 
 PR your mods back here so everyone can benefit!
 
