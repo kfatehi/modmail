@@ -13,12 +13,12 @@ Modmail expects `~/.modmail.config.js` to exist with following semantics:
 
 ```js
 module.exports = {
-  // set up each account, which will run in its own tab with the label `label`
-  // each web session persists using the `id` property, so make it unique and without special characters or spaces
-  // each account can be independently configured with its own independent set of `mods`
   accounts: [{
-    id: 'personal',
-    label: "Personal",
+    id: 'personal', // used to persist the session. omit special characters/spaces
+
+    label: "Personal", // what to display on the tab for this session
+
+    // choose whatever mods you'd like to use, and configure them if necessary
     mods: [
       { id: 'gpg', config: { /* modules can take configs */ } }
     ]
