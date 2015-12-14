@@ -41,10 +41,10 @@ module.exports = {
 ### gpg
 
 Features:
-* Decrypt GPG emails
+* Decrypt emails
+* Encrypt emails
 
 Wishlist:
-* Encrypt emails
 * Encrypted Attachments
 
 This module requires a **config**. Example module block:
