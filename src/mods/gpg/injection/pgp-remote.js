@@ -1,6 +1,8 @@
 var Promise = require('bluebird');
 var ipc = require('electron').ipcRenderer;
+
 module.exports.decrypt = decryptRemotely;
+module.exports.encrypt = encryptRemotely;
 
 // all this does is message the ciphertext to the secure area
 // and get back the plaintext. this is to avoid bringing the
@@ -8,25 +10,20 @@ module.exports.decrypt = decryptRemotely;
 // returns a promise
 function decryptRemotely(pgpMessage) {
   return new Promise(function(resolve, reject) {
-    function getMessage(msgEvent) {
-      console.log('get message bakc', msgEvent);
-      if (msgEvent.name == "decryptedMessage") {
-        var res = JSON.parse(msgEvent.message);
-        if (res.error)
-          reject(res.error);
-        else
-          resolve(res.plaintext)
-      }
-    }
-
     ipc.on('decrypt-result', function(event, result) {
-      if (result.error) {
-        reject(result.error);
-      } else {
-        resolve(result.plaintext)
-      }
+      result.error ? reject(result.error) : resolve(result.plaintext)
     });
-
     ipc.sendToHost('decrypt-request', pgpMessage);
+  });
+}
+
+function encryptRemotely(recipient, plaintext) {
+  return new Promise(function(resolve, reject) {
+    ipc.on('encrypt-result', function(event, result) {
+      result.error ? reject(result.error) : resolve(result.ciphertext)
+    });
+    ipc.sendToHost('encrypt-request', {
+      recipient: recipient, plaintext: plaintext
+    });
   });
 }

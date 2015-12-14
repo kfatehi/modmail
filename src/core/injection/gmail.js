@@ -46,6 +46,9 @@ module.exports = function($) {
     container.attr('role', 'alertdialog');
     container.attr('aria-labelledby', 'gmailJsModalWindowTitle');
     container.attr('style', 'left:50%;top:50%;opacity:1;');
+
+    // Setup context for return value and callback binding
+    var context = { modal: container, remove: remove }
     
     // Modal window header contents
     var header = $(document.createElement('div'));
@@ -63,7 +66,7 @@ module.exports = function($) {
     closeButton.attr('role', 'button');
     closeButton.attr('tabindex', '0');
     closeButton.attr('aria-label', 'Close');
-    closeButton.click(onClickClose);
+    closeButton.click(onClickClose.bind(context));
     
     header.append(heading);
     header.append(closeButton);
@@ -83,13 +86,13 @@ module.exports = function($) {
     okButton.attr('class', 'J-at1-auR J-at1-atl');
     okButton.attr('name', 'ok');
     okButton.text('OK');
-    okButton.click(onClickOk);
+    okButton.click(onClickOk.bind(context));
     
     var cancelButton = $(document.createElement('button'));
     cancelButton.attr('id', 'gmailJsModalWindowCancel');
     cancelButton.attr('name', 'cancel');
     cancelButton.text('Cancel');
-    cancelButton.click(onClickCancel);
+    cancelButton.click(onClickCancel.bind(context));
     
     controls.append(okButton);
     controls.append(cancelButton);
@@ -111,6 +114,7 @@ module.exports = function($) {
     center();
     
     $(window).resize(center);
+    return context;
   }
   return api
 }

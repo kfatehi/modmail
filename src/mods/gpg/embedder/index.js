@@ -6,9 +6,17 @@ module.exports.init = function(prefix, webview) {
     if (event.channel === 'decrypt-request') {
       ipcRenderer.send(prefix+'decrypt-request', event.args[0])
     }
+
+    if (event.channel === 'encrypt-request') {
+      ipcRenderer.send(prefix+'encrypt-request', event.args[0])
+    }
   });
 
   ipcRenderer.on(prefix+'decrypt-result', function(event, arg) {
     webview.send('decrypt-result', arg)
+  });
+
+  ipcRenderer.on(prefix+'encrypt-result', function(event, arg) {
+    webview.send('encrypt-result', arg)
   });
 }
