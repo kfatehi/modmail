@@ -4,6 +4,8 @@ const app = electron.app;  // Module to control application life.
 const Menu = electron.Menu;
 const shell = electron.shell;
 const core = require('./src/core/main-process');
+const name = electron.app.getName();
+const BrowserWindow = electron.BrowserWindow;  // Module to create native browser window.
 
 // Report crashes to our server.
 electron.crashReporter.start();
@@ -12,7 +14,9 @@ electron.crashReporter.start();
 app.on('window-all-closed', function() {
   // On OS X it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
+    console.log('winallclose1');
   if (process.platform != 'darwin') {
+    console.log('winallclose2');
     app.quit();
   }
 });
@@ -24,12 +28,6 @@ app.on('ready', function() {
 
   // Create the Application's main menu
   let template = [{
-    label: "Modmail",
-    submenu: [
-      { label: "About Modmail", selector: "orderFrontStandardAboutPanel:" },
-      { type: "separator" },
-      { label: "Quit", accelerator: "Command+Q", click: function() { app.quit(); }}
-    ]}, {
       label: "Edit",
       submenu: [
         { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
@@ -112,6 +110,59 @@ app.on('ready', function() {
       ]
     },
   ];
+
+
+  if (process.platform == 'darwin') {
+    template.unshift({
+      label: name,
+      submenu: [
+        {
+          label: 'About ' + name,
+          role: 'about'
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: 'Services',
+          role: 'services',
+          submenu: []
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: 'Hide ' + name,
+          accelerator: 'Command+H',
+          role: 'hide'
+        },
+        {
+          label: 'Hide Others',
+          accelerator: 'Command+Shift+H',
+          role: 'hideothers'
+        },
+        {
+          label: 'Show All',
+          role: 'unhide'
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: 'Quit',
+          accelerator: 'Command+Q',
+          click: function() {
+            console.log('apple quitter');
+            BrowserWindow.getAllWindows().forEach((win) => {
+              console.log('destroying a iwn');
+              win.destroy();
+            })
+            app.quit();
+          }
+        },
+      ]
+    });
+  }
 
   Menu.setApplicationMenu(Menu.buildFromTemplate(template));
 });
