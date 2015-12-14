@@ -2,7 +2,9 @@
 const mods = require('./src/mods');
 const config = require('./src/config');
 const preload = "src/core/injection/index.js";
-const ipcRenderer = require('electron').ipcRenderer;
+const electron = require('electron');
+const shell = electron.shell;
+const ipcRenderer = electron.ipcRenderer;
 window.$ = require('jquery');
 
 function init() {
@@ -26,6 +28,10 @@ function init() {
 
       // then send the init signal
       webview.send('init-injection', account);
+    });
+
+    webview.addEventListener('new-window', function(e) {
+      shell.openExternal(e.url);
     });
 
   })
