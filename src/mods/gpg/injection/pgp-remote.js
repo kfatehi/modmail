@@ -21,7 +21,6 @@ function randId() {
 function decryptRemotely(id, pgpMessage) {
   return new Promise(function(resolve, reject) {
     ipc.on('decrypt-result', function(event, result) {
-      console.log('dec res', result);
       if (result.id === id) {
         if (result.error) {
           reject(result.error)

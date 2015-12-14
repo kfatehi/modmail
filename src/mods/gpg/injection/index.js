@@ -65,16 +65,19 @@ function addDecryptorToMessageContainer(menuNode) {
     menu.data('modmail-mark', true)
     console.log('added decrypt btn');
     var decryptButton = gmail.tools.add_menu_button(menuNode, 'Decrypt', function onClick() {
-      console.log('clicked');
-      gmail.dom.messageBodies().each(function(i, el) {
-        var bodyElement = $(el)
-        decryptAndReplaceMessageBody(bodyElement)
+      // this menu actually is shared/changed/moved for all messages
+      // so to get this actual messgae, we need to find the "more" button
+      // that opens it. the attributes make it simple to locate...
+      var moreBtn = $('[aria-label=More][aria-expanded=true]')
+      var bodyElement = moreBtn.parents('.adn.ads').find('.adP.adO > div')
+      decryptAndReplaceMessageBody(bodyElement, function() {
+        moreBtn.blur();
       })
     })
   }
 }
 
-function decryptAndReplaceMessageBody(bodyElement) {
+function decryptAndReplaceMessageBody(bodyElement, done) {
   var cryptoBlocks = bodyParser.extractPGP(bodyElement.text());
   if (cryptoBlocks.length) {
     decrypt(cryptoBlocks).then(function(plaintexts) {
@@ -86,8 +89,8 @@ function decryptAndReplaceMessageBody(bodyElement) {
       });
     }).catch(function(err) {
       showModal('Decryption Failed', 'Either you do not have the key, or your passphrase is wrong, or the message is corrupt.');
-    });
-  }
+    }).finally(done)
+  } else done()
 }
 
 function decrypt(pgpBlocks) {
