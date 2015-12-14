@@ -12,22 +12,25 @@ module.exports.init = function(prefix, config) {
 
   getSecrets().spread(function(key, passphrase) {
 
-    ipcMain.on(prefix+'decrypt-request', function(event, ciphertext) {
+    ipcMain.on(prefix+'decrypt-request', function(event, data) {
+      var id = data.id;
+      var ciphertext = data.ciphertext
       decrypt(ciphertext, key, passphrase).then(function(value) {
-        event.sender.send(prefix+"decrypt-result", { plaintext: value })
+        event.sender.send(prefix+"decrypt-result", { plaintext: value, id: id })
       }).catch(function(err) {
-        event.sender.send(prefix+"decrypt-result", { error: err.message })
+        event.sender.send(prefix+"decrypt-result", { error: err.message, id: id })
       });
     });
 
     ipcMain.on(prefix+'encrypt-request', function(event, data) {
+      var id = data.id;
       var plaintext = data.plaintext;
       getRecipientPublicKey(data.recipient).then(function(pubKey) {
         return encrypt(pubKey, plaintext)
       }).then(function(ciphertext) {
-        event.sender.send(prefix+"encrypt-result", { ciphertext: ciphertext })
+        event.sender.send(prefix+"encrypt-result", { ciphertext: ciphertext, id: id })
       }).catch(function(err) {
-        event.sender.send(prefix+"encrypt-result", { error: err.message })
+        event.sender.send(prefix+"encrypt-result", { error: err.message, id: id })
       });
     });
 
