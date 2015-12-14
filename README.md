@@ -59,6 +59,15 @@ This module requires a **config**. Example module block:
       let email = "example@gmail.com";
       spawn('/usr/local/bin/gpg', ['--export-secret-key', '-a', email])
       .stdout.on('data', (buf) => { cb(null, [buf.toString(), passphrase]) });
+    },
+    getRecipientPublicKey: (rec, cb) => {
+      let spawn = require("child_process").spawn;
+      let out = "";
+      var gpg = spawn('/usr/local/bin/gpg', ['--export', '-a', rec])
+      gpg.stdout.on('data', (buf) => { out+=buf.toString() })
+      .on('end', function() {
+        cb(null, out);
+      })
     }
   }
 }
