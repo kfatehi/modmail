@@ -22,7 +22,7 @@ module.exports = {
 
     // choose whatever mods you'd like to use, and configure them if necessary
     mods: [
-      { id: 'gpg', config: { /* modules can take configs */ } }
+      { id: 'pgp', config: { /* modules can take configs */ } }
     ]
   },{
     id: 'business',
@@ -38,7 +38,7 @@ module.exports = {
 
 ## Included Modules
 
-### gpg
+### pgp
 
 Features:
 * Decrypt emails
@@ -51,7 +51,7 @@ This module requires a **config**. Example module block:
 
 ```js
 {
-  id: 'gpg',
+  id: 'pgp',
   config: {
     getSecrets: (cb) => {
       let spawn = require("child_process").spawn;
@@ -83,7 +83,7 @@ The webview is preloaded with the core **injection** which subsequently injects 
 
 Most of the time you can do all the work in the injection component. Sometimes, this is unsafe. In these cases, we must use the IPC facilities provided by Electron.
 
-For example, the `gpg` mod uses IPC to sends ciphertext to the embedder where it is then relayed by IPC to the main process.
+For example, the `pgp` mod uses IPC to sends ciphertext to the embedder where it is then relayed by IPC to the main process.
 
 The main process attempts to decrypt the ciphertext and then IPC's back the way it came until it replaces the DOM.
 
@@ -91,7 +91,7 @@ We do this because we don't want the private key anywhere near the wild web code
 
 ## Developing Modules
 
-To develop your own module, add it to your config using the `path` key. Make sure to set an `id` key too so that your ipc prefix is setup correctly. See the `gpg` module in the `src` directory for examples of each component.
+To develop your own module, add it to your config using the `path` key. Make sure to set an `id` key too so that your ipc prefix is setup correctly. See the `pgp` mod in the `src/mods` directory for examples of each component.
 
 As you edit your embedder and injection components, you can hit CMD-R (Ctrl-R on Windows and Linux) to reload! You can also open the inspector (see the View menu for the hotkey) to see your embedder and injection developer tools!
 
