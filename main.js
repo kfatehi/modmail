@@ -14,12 +14,16 @@ electron.crashReporter.start();
 app.on('window-all-closed', function() {
   // On OS X it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
-    console.log('winallclose1');
   if (process.platform != 'darwin') {
-    console.log('winallclose2');
     app.quit();
   }
 });
+
+app.on('before-quit', function() {
+  BrowserWindow.getAllWindows().forEach((win) => {
+    win.destroy();
+  })
+})
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -152,11 +156,6 @@ app.on('ready', function() {
           label: 'Quit',
           accelerator: 'Command+Q',
           click: function() {
-            console.log('apple quitter');
-            BrowserWindow.getAllWindows().forEach((win) => {
-              console.log('destroying a iwn');
-              win.destroy();
-            })
             app.quit();
           }
         },
