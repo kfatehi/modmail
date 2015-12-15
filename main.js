@@ -6,6 +6,7 @@ const shell = electron.shell;
 const core = require('./src/core/main-process');
 const name = electron.app.getName();
 const BrowserWindow = electron.BrowserWindow;  // Module to create native browser window.
+const preferences = require('./src/preferences');
 
 // Report crashes to our server.
 electron.crashReporter.start();
@@ -123,6 +124,16 @@ app.on('ready', function() {
         {
           label: 'About ' + name,
           role: 'about'
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: "Preferences",
+          accelerator: "Command+,",
+          click: function() {
+            preferences.open()
+          }
         },
         {
           type: 'separator'

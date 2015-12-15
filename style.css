@@ -40,3 +40,14 @@ body {
 .tab.active {
   background-color: #eee;
 }
+
+/*
+ *
+ * Preferences
+ *
+ */
+
+select.account-selector {
+  min-width: 150px;
+  height: 100%;
+}

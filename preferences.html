@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Preferences</title>
+    <link rel="stylesheet" href="style.css" type="text/stylesheet" />
+    <script src="src/preferences/gui.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body ng-app="preferences">
+    <div ng-controller="AccountsCtrl">
+      <select class="account-selector" ng-model="data.acctId" size="16">
+        <option ng-selected="data.acctId == acct.id" value={{acct.id}} ng-repeat="acct in accounts">{{acct.label}}</option>
+      </select>
+
+      <div>
+        <button ng-click="addAccount()">
+          Add
+        </button>
+
+        <button ng-click="deleteAccount()">
+          Delete
+        </button>
+      </div>
+
+      <div>
+        {{ data.acctId }}
+      </div>
+    </div>
+  </body>
+</html>

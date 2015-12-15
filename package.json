@@ -29,6 +29,7 @@
     "electron-prebuilt": "^0.35.4"
   },
   "dependencies": {
+    "angular": "^1.4.8",
     "bluebird": "^3.0.6",
     "jquery": "^2.1.4",
     "lodash": "^3.10.1",
