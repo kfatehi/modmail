@@ -4,27 +4,16 @@ var Promise = require('bluebird');
 var bodyParser = require('./body-parser');
 
 // $ and gmail will be properties of window by the time this is called
-module.exports.init = function() {
-  // https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
-  var observer = new MutationObserver(function(mutations) {
-    mutations.forEach(function(mutation) {
-      if (mutation.type === 'childList') {
-        if (isComposerMenu(mutation)) {
-          addEncryptorToComposerMenu(mutation.target)
-        } else if (isMessageMenu(mutation)) {
-          addDecryptorToMessageContainer(mutation.target)
-        }
+module.exports.init = function(api) {
+  api.mutations.listen(function(mutation) {
+    if (mutation.type === 'childList') {
+      if (isComposerMenu(mutation)) {
+        addEncryptorToComposerMenu(mutation.target)
+      } else if (isMessageMenu(mutation)) {
+        addDecryptorToMessageContainer(mutation.target)
       }
-    })
+    }
   })
-
-  var config = {
-    subtree: true,
-    attributes: false,
-    childList: true
-  }
-
-  observer.observe(document, config)
 }
 
 function isComposerMenu(mutation) {
