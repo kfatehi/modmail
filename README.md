@@ -53,12 +53,9 @@ This module requires a **config**. Example module block:
 {
   id: 'pgp',
   config: {
-    getSecrets: (cb) => {
-      let spawn = require("child_process").spawn;
-      let passphrase = "my secret phrase";
-      let email = "example@gmail.com";
-      spawn('/usr/local/bin/gpg', ['--export-secret-key', '-a', email])
-      .stdout.on('data', (buf) => { cb(null, [buf.toString(), passphrase]) });
+    identity: {
+      passphrase: readFile("/path/to/file/with/passphrase").trim(),
+      privateKey: readFile('/path/to/file/with/private.key')
     },
     getRecipientPublicKey: (rec, cb) => {
       let spawn = require("child_process").spawn;
