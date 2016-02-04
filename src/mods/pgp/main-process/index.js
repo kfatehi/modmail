@@ -14,7 +14,7 @@ module.exports.init = function(prefix, config) {
   ipcMain.on(prefix+'decrypt-request', function(event, data) {
     var id = data.id;
     var ciphertext = data.ciphertext
-    decrypt(ciphertext, key, passphrase).then(function(value) {
+    decrypt(ciphertext, key(), passphrase()).then(function(value) {
       event.sender.send(prefix+"decrypt-result", { plaintext: value, id: id })
     }).catch(function(err) {
       event.sender.send(prefix+"decrypt-result", { error: err.message, id: id })
@@ -26,15 +26,15 @@ module.exports.init = function(prefix, config) {
     var plaintext = data.plaintext;
     var recipients = data.recipients;
 
-    var publicKeys = []
+    var publicKeys = ""
     var err = null
 
     _.each(recipients, function(emailAddress) {
       let recipient = _.find(config.recipients, (recip) => {
         return _.contains(recip.emails, emailAddress)
       })
-      if (recipient) {
-        publicKeys.push(recipient.publicKey)
+      if (recipient && recipient.publicKey) {
+        publicKeys += recipient.publicKey() + "\n"
       } else {
         err = `no public key found for ${emailAddress}`;
       }
@@ -61,6 +61,6 @@ function decrypt(pgpMessage, key, passphrase) {
 }
 
 function encrypt(pubKeys, plaintext) {
-  var publicKey = openpgp.key.readArmored(pubKeys.join('\n'));
+  var publicKey = openpgp.key.readArmored(pubKeys)
   return openpgp.encryptMessage(publicKey.keys, plaintext)
 }

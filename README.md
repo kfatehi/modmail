@@ -50,22 +50,28 @@ Wishlist:
 This module requires a **config**. Example module block:
 
 ```js
+'use strict';
+const readFile = (fp) => require('fs').readFileSync(fp).toString();
 {
   id: 'pgp',
   config: {
     identity: {
-      passphrase: readFile("/path/to/file/with/passphrase").trim(),
-      privateKey: readFile('/path/to/file/with/private.key')
+      passphrase: () => readFile("/path/to/file/with/passphrase").trim(),
+      privateKey: () => readFile('/path/to/file/with/private.key')
     },
-    getRecipientPublicKey: (rec, cb) => {
-      let spawn = require("child_process").spawn;
-      let out = "";
-      var gpg = spawn('/usr/local/bin/gpg', ['--export', '-a', rec])
-      gpg.stdout.on('data', (buf) => { out+=buf.toString() })
-      .on('end', function() {
-        cb(null, out);
-      })
-    }
+    recipients: [{
+      emails: [
+        "keyvanfatehi@gmail.com",
+        "kfatehi@uci.edu"
+      ],
+      publicKey: () => readFile('/path/to/pubkeys/keyvan.fatehi.key')
+    },{
+      emails: [
+        "john.smith@gmail.com",
+        "johnsmith1989@gmail.com"
+      ],
+      publicKey: () => readFile('/path/to/pubkeys/john.smith.key')
+    }]
   }
 }
 ```
