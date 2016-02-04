@@ -1,3 +1,4 @@
+"use strict";
 var _ = require('lodash');
 var pgp = require('./pgp-remote');
 var Promise = require('bluebird');
@@ -24,6 +25,10 @@ function isMessageMenu(mutation) {
   return mutation.target.className === "b7 J-M"
 }
 
+function getRecipients() {
+  return gmail.dom.get_composer_recipients().join("\n")
+}
+
 function addEncryptorToComposerMenu(menuNode) {
   var menu = $(menuNode)
   if (! menu.data('modmail-mark')) {
@@ -31,13 +36,16 @@ function addEncryptorToComposerMenu(menuNode) {
     gmail.tools.add_menu_button(menuNode, 'Encrypt', function onClick() {
       var editable = menu.parent().parent().find('.editable')
       var email = htmlToTextWithNewlines(editable.html())
-      showModal('Encrypt Message', [
-        '<label>PGP Recipient</label><input type="text" id="pgp-recipient"/>',
-        '<div>Clicking OK will replace your email content with the PGP encrypted version</div>'
-      ].join('\n'), function ok() {
+      let modalTitle = 'Encrypt Message'
+      let modalBody = `
+      <label>PGP Recipients (one on each line):</label>
+      <textarea style="display:block;width:100%;min-height:50px;" id="pgp-recipient">${getRecipients()}</textarea>
+      <div>Clicking OK will replace your email content with the encrypted version that can be decrypted only by those in the above list.</div>
+      `
+      showModal(modalTitle, modalBody, function ok() {
         var modal = this;
-        var recipient = $('#pgp-recipient').val().trim();
-        pgp.encrypt(recipient, email).then(function(val) {
+        var recipients = $('#pgp-recipient').val().split('\n').map(i=>i.trim());
+        pgp.encrypt(recipients, email).then(function(val) {
           editable.html(val.replace(/\n/g,'<br>'))
           modal.remove();
         }).catch(function(err) {

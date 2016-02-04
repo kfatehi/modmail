@@ -5,6 +5,7 @@ const electron = require('electron');
 const ipcMain = electron.ipcMain;
 const dialog = electron.dialog;
 const secretsFilePath = `${process.env.HOME}/.gpg-secret.js`;
+const _ = require('lodash');
 
 module.exports.init = function(prefix, config) {
   const key = config.identity.privateKey;
@@ -23,13 +24,32 @@ module.exports.init = function(prefix, config) {
   ipcMain.on(prefix+'encrypt-request', function(event, data) {
     var id = data.id;
     var plaintext = data.plaintext;
-    getRecipientPublicKey(data.recipient).then(function(pubKey) {
-      return encrypt(pubKey, plaintext)
-    }).then(function(ciphertext) {
-      event.sender.send(prefix+"encrypt-result", { ciphertext: ciphertext, id: id })
-    }).catch(function(err) {
-      event.sender.send(prefix+"encrypt-result", { error: err.message, id: id })
-    });
+    var recipients = data.recipients;
+
+    var publicKeys = []
+    var err = null
+
+    _.each(recipients, function(emailAddress) {
+      let recipient = _.find(config.recipients, (recip) => {
+        return _.contains(recip.emails, emailAddress)
+      })
+      if (recipient) {
+        publicKeys.push(recipient.publicKey)
+      } else {
+        err = `no public key found for ${emailAddress}`;
+      }
+    })
+
+    if (err) {
+      event.sender.send(prefix+"encrypt-result", { error: err, id: id })
+    } else {
+      encrypt(publicKeys, plaintext).then(function(ciphertext) {
+        event.sender.send(prefix+"encrypt-result", { ciphertext: ciphertext, id: id })
+      }).catch(function() {
+        event.sender.send(prefix+"encrypt-result", { error: err.message, id: id })
+      })
+    }
+
   });
 }
 
@@ -40,7 +60,7 @@ function decrypt(pgpMessage, key, passphrase) {
   return openpgp.decryptMessage(privateKey, pgpMessage)
 }
 
-function encrypt(pubKey, plaintext) {
-  var publicKey = openpgp.key.readArmored(pubKey);
+function encrypt(pubKeys, plaintext) {
+  var publicKey = openpgp.key.readArmored(pubKeys.join('\n'));
   return openpgp.encryptMessage(publicKey.keys, plaintext)
 }

@@ -38,6 +38,10 @@ module.exports = function($) {
     return $('.adP.adO > div')
   }
 
+  api.dom.get_composer_recipients = function() {
+    return $(".aXjCH").find('span[email]').map((e,i)=>$(i).attr('email')).toArray()
+  }
+
   api.tools.add_modal_window = function(title, content_html, onClickOk, onClickCancel, onClickClose) {
     var remove = function() {
       $('#gmailJsModalBackground').remove();

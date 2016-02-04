@@ -5,8 +5,8 @@ module.exports.decrypt = function(pgpMessage) {
   return decryptRemotely(randId(), pgpMessage);
 }
 
-module.exports.encrypt = function(recipient, plaintext) {
-  return encryptRemotely(randId(), recipient, plaintext);
+module.exports.encrypt = function(recipients, plaintext) {
+  return encryptRemotely(randId(), recipients, plaintext);
 }
 
 // used to keep our IPC messages from clashing
@@ -35,7 +35,7 @@ function decryptRemotely(id, pgpMessage) {
   });
 }
 
-function encryptRemotely(id, recipient, plaintext) {
+function encryptRemotely(id, recipients, plaintext) {
   return new Promise(function(resolve, reject) {
     ipc.on('encrypt-result', function(event, result) {
       if (result.id === id) {
@@ -47,7 +47,7 @@ function encryptRemotely(id, recipient, plaintext) {
       }
     });
     ipc.sendToHost('encrypt-request', {
-      recipient: recipient, plaintext: plaintext, id: id 
+      recipients: recipients, plaintext: plaintext, id: id 
     });
   });
 }
