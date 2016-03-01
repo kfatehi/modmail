@@ -10,8 +10,6 @@ module.exports.init = function(api) {
     if (mutation.type === 'childList') {
       if (isComposer(mutation)) {
         addSafeInputToComposerMenu(mutation.target)
-      } else if (isComposerMenu(mutation)) {
-        addEncryptorToComposerMenu(mutation.target)
       } else if (isMessageMenu(mutation)) {
         addDecryptorToMessageContainer(mutation.target)
       }
@@ -39,67 +37,39 @@ function addSafeInputToComposerMenu(editorNode) {
   var unsafeEditor = $(editorNode)
   if (! unsafeEditor.data('modmail-mark')) {
     unsafeEditor.data('modmail-mark', true)
-    .css({
-      height: '10px'
-    })
-
-    var safeEditor = $('<textarea></textarea>')
-    .addClass('modmail-safecomposer')
-    .css({
-      direction: 'ltr',
-      'min-height': '250px',
-      width:'100%',
-      'background-color': '#ddd',
-      display: 'block'
-    })
-    .val(`This input box is provided by the Modmail PGP mod in order to bypass Gmail's draft auto-saving feature. Text written here is not saved by Gmail. Text written here will be lost if you do not encrypt this message. Text written in the normal editor is not encrypted and is overwritten when you encrypt. To write a normal email, click the unsafe editor button.`)
-
 
     var useUnsafe = $('<button></button>')
     .addClass('modmail-useunsafecomposer')
-    .text('Use Unsafe Editor')
+    .text('Open Encrypting Composer')
     .click(function() {
-      safeEditor.remove();
-      $(this).remove()
+      launchEncryptingComposer(unsafeEditor)
     })
 
-    unsafeEditor.prepend( safeEditor )
     unsafeEditor.parent().prepend( useUnsafe )
-    console.log('editor modded', unsafeEditor);
   } 
 }
 
-function addEncryptorToComposerMenu(menuNode) {
-  var menu = $(menuNode)
-  if (! menu.data('modmail-mark')) {
-    menu.data('modmail-mark', true)
-
-    gmail.tools.add_menu_button(menuNode, 'Encrypt', function onClick() {
-      var editable = menu.parent().parent().find('.editable')
-      console.log(editable);
-      let modalTitle = 'Encrypt Message'
-      let modalBody = `<label>PGP Recipients (one on each line):</label>
-      <textarea style="display:block;width:100%;min-height:50px;" id="pgp-recipient">${getRecipients()}</textarea>
-      <div>Clicking OK will replace your email content with the encrypted version that can be decrypted only by those in the above list.</div>`
-      showModal(modalTitle, modalBody, function ok() {
-        var modal = this;
-        var modalContainer = modal.modal;
-        var recipients = modalContainer.find('#pgp-recipient').val().split('\n').map(i=>i.trim());
-
-        var safeComposer = editable.find('.modmail-safecomposer')
-        var email = safeComposer.val()
-        safeComposer.remove();
-        editable.parent().find('.modmail-useunsafecomposer').remove()
-
-        pgp.encrypt(recipients, email).then(function(val) {
-          editable.html(val.replace(/\n/g,'<br>'))
-          modal.remove();
-        }).catch(function(err) {
-          alert(err);
-        });
-      })
-    })
-  }
+function launchEncryptingComposer(editable) {
+  let modalTitle = 'Encrypt Message'
+  let modalBody = `
+  <label>PGP Recipients (one on each line):</label>
+  <textarea style="display:block;width:100%;min-height:25px;" id="pgp-recipient">${getRecipients()}</textarea>
+  <label>Plaintext:</label>
+  <textarea style="display:block;width:100%;min-height:100px;" id="modmail-safecomposer"></textarea>
+  <div>Clicking OK will replace your Gmail composer content with the encrypted version of the above which can be decrypted only by those in the recipient list.</div>`
+  showModal(modalTitle, modalBody, function ok() {
+    var modal = this;
+    var modalContainer = modal.modal;
+    var recipients = modalContainer.find('#pgp-recipient').val().trim().split('\n').map(i=>i.trim());
+    var safeComposer = modalContainer.find('#modmail-safecomposer')
+    var email = safeComposer.val()
+    pgp.encrypt(recipients, email).then(function(val) {
+      editable.html(val.replace(/\n/g,'<br>'))
+      modal.remove();
+    }).catch(function(err) {
+      alert(err);
+    });
+  })
 }
 
 function addDecryptorToMessageContainer(menuNode) {
