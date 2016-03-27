@@ -14,6 +14,9 @@ ipc.on('init-injection', function(event, account) {
     stylesheet: initStyleTool(),
   }
 
+  // remove the old chrome notice
+  tools.stylesheet.insertRule(".w-MH { display: none !important; }", 0);
+
   mods.initializeModComponents('injection', [account, tools]);
 });
 
