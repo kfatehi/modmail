@@ -22,7 +22,7 @@ module.exports = {
 
     // choose whatever mods you'd like to use, and configure them if necessary
     mods: [
-      { id: 'pgp', config: { /* modules can take configs */ } }
+      { id: 'my-mod', config: { /* modules can take configs */ } },
     ]
   },{
     id: 'business',
@@ -30,6 +30,7 @@ module.exports = {
     mods: [
       // you can also develop your own mods, just specify the path
       // development is easy. use the Reload and Inspector features to build mods quickly
+      // tip: I find the fastest worfklow is to hit Ctrl-R/Cmd-R to from within the injected inspector to refresh without having to re-open the inspector
       { id: 'my-mod', path: 'path/to/project' }
     ]
   }],
@@ -72,6 +73,25 @@ const readFile = (fp) => require('fs').readFileSync(fp).toString();
       ],
       publicKey: () => readFile('/path/to/pubkeys/john.smith.key')
     }]
+  }
+}
+```
+
+### autologin
+
+Features:
+* Automatic login by filling fields and submitting form
+* Rate limited to prevent triggering captcha and security issues
+* Detects captcha and gives user a chance to enter it and sign in
+
+This module requires a **config**. Example block:
+
+```js
+{
+  id: 'autologin',
+  config: {
+    email: "kfatehi@gmail.com",
+    password: "super-secret"
   }
 }
 ```

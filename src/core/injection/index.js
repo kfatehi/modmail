@@ -1,6 +1,7 @@
 'use strict';
 const ipc = require('electron').ipcRenderer
 const mods = require('../../mods')
+const _ = require('lodash')
 
 ipc.on('init-injection', function(event, account) {
   window.$ = require('jquery');
@@ -12,6 +13,11 @@ ipc.on('init-injection', function(event, account) {
 
     // manipulate styles
     stylesheet: initStyleTool(),
+
+    // find the mod config
+    getModConfig: function(id) {
+      return _.find(account.mods, { id: id }).config
+    }
   }
 
   // remove the old chrome notice
