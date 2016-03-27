@@ -6,6 +6,15 @@ ipc.on('init-injection', function(event, account) {
   window.$ = require('jquery');
   window.gmail = require('./gmail')(window.$)
 
+  let tools = {
+    // react to dom events
+    mutations: initMutationTool(),
+  }
+
+  mods.initializeModComponents('injection', [account, tools]);
+});
+
+function initMutationTool() {
   let handlers = [];
 
   // https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
@@ -25,13 +34,11 @@ ipc.on('init-injection', function(event, account) {
 
   observer.observe(document, config)
 
-  let tools = {
-    mutations: {
-      listen: function(fn) {
-        handlers.push(fn)
-      }
+  return {
+    listen: function(fn) {
+      handlers.push(fn)
     }
   }
+}
 
-  mods.initializeModComponents('injection', [account, tools]);
-});
+
