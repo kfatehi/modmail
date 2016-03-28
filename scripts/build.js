@@ -10,7 +10,7 @@ packager({
   dir: __dirname+'/../',
   platform: require('os').platform(),
   icon: __dirname+'/../images/logo',
-  ignore: /scripts/,
+  ignore: /scripts|out/,
   overwrite: true,
   prune: true,
   out: __dirname+'/../out',
