@@ -43,9 +43,14 @@ function addSafeInputToComposerMenu(editorNode) {
     .text('Open Encrypting Composer')
     .click(function() {
       launchEncryptingComposer(unsafeEditor)
+    }).css({
+      'position':'absolute',
+      'top': 0
     })
 
-    unsafeEditor.parent().prepend( useUnsafe )
+    unsafeEditor.css({
+      'padding-top': '25px' // so the text doesnt get covered by button
+    }).parent().append( useUnsafe )
   } 
 }
 
