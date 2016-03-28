@@ -7,7 +7,7 @@
     "start": "electron main.js",
     "build": "node scripts/build.js",
     "archive": "node scripts/archive.js",
-    "release": "npm run build && npm run archive"
+    "release": "npm install && npm run build && npm run archive"
   },
   "repository": {
     "type": "git",
