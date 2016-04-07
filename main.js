@@ -161,6 +161,19 @@ app.on('ready', function() {
         },
       ]
     });
+  } else {
+    template.unshift({
+      label: "File",
+      submenu: [
+        {
+          label: 'Quit',
+          accelerator: 'Command+Q',
+          click: function() {
+            app.quit();
+          }
+        },
+      ]
+    });
   }
 
   Menu.setApplicationMenu(Menu.buildFromTemplate(template));
