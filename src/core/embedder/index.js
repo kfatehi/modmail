@@ -1,13 +1,13 @@
 "use strict";
 const mods = require('./src/mods');
-const config = require('./src/config');
 const preload = "src/core/injection/index.js";
 const electron = require('electron');
 const shell = electron.shell;
 const ipcRenderer = electron.ipcRenderer;
+const config = require('./src/config').load();
 window.$ = require('jquery');
 
-function init() {
+function init(config) {
   config.accounts.forEach(function(account) {
     let tab = createTab(account);
 
@@ -35,9 +35,12 @@ function init() {
     });
 
   })
-  setTimeout(function() {
-    switchTo(config.accounts[0]);
-  }, 0);
+
+  if (config.accounts.length > 1) {
+    setTimeout(function() {
+      switchTo(config.accounts[0]);
+    }, 0);
+  }
 
   ipcRenderer.on('toggle-webview-inspector', toggleWebviewDevTools)
 }
@@ -89,4 +92,4 @@ function toggleWebviewDevTools() {
   });
 }
 
-init();
+init(config);
