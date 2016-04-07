@@ -3,6 +3,7 @@ const electron = require('electron');
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;  // Module to create native browser window.
 const mods = require('../../mods');
+const config = require('../../config');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -19,7 +20,7 @@ module.exports.init = function() {
   // and load the index.html of the app.
   mainWindow.loadURL(`file://${__dirname}/../../../index.html`);
 
-  mods.initializeModComponents('main-process')
+  mods.initializeModComponents('main-process', [config.load()])
 
   if (process.platform == 'darwin') {
     mainWindow.on('close', function(event) {

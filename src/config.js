@@ -1,4 +1,10 @@
 "use strict";
-const _ = require('lodash');
-const data = require(`${process.env.HOME || process.env.USERPROFILE}/.modmail.config.js`);
-module.exports = data;
+module.exports = {
+  load: function() {
+    try {
+      return require(`${process.env.HOME || process.env.USERPROFILE}/.modmail.config.js`);
+    } catch (e) {
+      return { accounts: [] }
+    }
+  }
+}

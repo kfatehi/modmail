@@ -1,9 +1,7 @@
 'use strict';
-const config = require('../config');
-
 module.exports.initializeModComponents = function(type, args) {
   if (type === 'main-process') {
-    initMain()
+    initMain.apply(this, args)
   } else if (type === 'embedder') {
     initEmbedder.apply(this, args)
   } else if (type === 'injection') {
@@ -39,7 +37,7 @@ function genIpcPrefix(account, mod) {
   return `${account.id}.${mod.id}.`
 }
 
-function initMain() {
+function initMain(config) {
   config.accounts.forEach((account) => {
     if (account.mods) {
       account.mods.forEach((mod) => {
