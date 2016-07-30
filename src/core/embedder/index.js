@@ -4,10 +4,30 @@ const preload = "src/core/injection/index.js";
 const electron = require('electron');
 const shell = electron.shell;
 const ipcRenderer = electron.ipcRenderer;
-const config = require('./src/config').load();
+const configLoader = require('./src/config')
+
 window.$ = require('jquery');
 
-function init(config) {
+function init() {
+  let config = configLoader.load()
+
+
+  ipcRenderer.on('toggle-webview-inspector', toggleWebviewDevTools)
+
+  let newUserDiv = $('#new-user')
+  newUserDiv.hide();
+  
+  if (config.accounts.length > 0) {
+    initAccountsAndTabs(config)
+  } else {
+
+    newUserDiv.find('#config-path').text(configLoader.path)
+    
+    newUserDiv.show();
+  }
+}
+
+function initAccountsAndTabs(config) {
   config.accounts.forEach(function(account) {
     let tab = createTab(account);
 
@@ -36,13 +56,9 @@ function init(config) {
 
   })
 
-  if (config.accounts.length > 1) {
-    setTimeout(function() {
-      switchTo(config.accounts[0]);
-    }, 0);
-  }
-
-  ipcRenderer.on('toggle-webview-inspector', toggleWebviewDevTools)
+  setTimeout(function() {
+    switchTo(config.accounts[0]);
+  }, 0);
 }
 
 function switchTo(account) {
@@ -92,4 +108,4 @@ function toggleWebviewDevTools() {
   });
 }
 
-init(config);
+init();
