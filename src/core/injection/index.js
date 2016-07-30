@@ -3,9 +3,12 @@ const ipc = require('electron').ipcRenderer
 const mods = require('../../mods')
 const _ = require('lodash')
 
+window.jQuery = require('jquery');
+window.$ = window.jQuery;
+window.gmail = require('./gmail')(window.$)
+require('gmail-js'); // sets window.Gmail
+
 ipc.on('init-injection', function(event, account) {
-  window.$ = require('jquery');
-  window.gmail = require('./gmail')(window.$)
 
   let tools = {
     // react to dom events
@@ -17,7 +20,9 @@ ipc.on('init-injection', function(event, account) {
     // find the mod config
     getModConfig: function(id) {
       return _.find(account.mods, { id: id }).config
-    }
+    },
+
+    gmail: window.Gmail()
   }
 
   // remove the old chrome notice

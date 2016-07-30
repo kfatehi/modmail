@@ -11,7 +11,6 @@ window.$ = require('jquery');
 function init() {
   let config = configLoader.load()
 
-
   ipcRenderer.on('toggle-webview-inspector', toggleWebviewDevTools)
 
   let newUserDiv = $('#new-user')
