@@ -2,6 +2,7 @@
 const ipc = require('electron').ipcRenderer
 const mods = require('../../mods')
 const _ = require('lodash')
+const fs = require('fs');
 
 ipc.on('init-injection', function(event, account) {
   window.$ = require('jquery');
@@ -13,6 +14,9 @@ ipc.on('init-injection', function(event, account) {
 
     // manipulate styles
     stylesheet: initStyleTool(),
+
+    // load stylesheet from file
+    addStylesheetFromFile: addStylesheetFromFile,
 
     // find the mod config
     getModConfig: function(id) {
@@ -70,3 +74,10 @@ function initStyleTool() {
   return style.sheet;
 }
 
+function addStylesheetFromFile(path) {
+  fs.readFile(path, function(err, buf) {
+    if ( err ) return console.error(err);
+    const css = buf.toString();
+    $('body').append(`<style type="text/css" media="all">${css}</style>`);
+  });
+}
