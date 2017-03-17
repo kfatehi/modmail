@@ -31,7 +31,13 @@ module.exports.init = (api) => {
   }
 
   function notifyNewMail() {
-    ipc.sendToHost('notify-new-mail');
+    let myNotification = new Notification('New Email', {
+      body: 'You have new mail.'
+    })
+
+    myNotification.onclick = () => {
+      ipc.sendToHost('new-mail-notification-clicked', count);
+    }
   }
 
   window._setBadgeToUnreadInboxCount = setBadgeToUnreadInboxCount;
