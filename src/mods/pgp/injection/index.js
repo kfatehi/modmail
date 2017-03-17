@@ -63,14 +63,13 @@ function launchEncryptingComposer(editable) {
   <textarea style="display:block;width:100%;min-height:100px;" id="modmail-safecomposer"></textarea>
   <div>Clicking OK will replace your Gmail composer content with the encrypted version of the above which can be decrypted only by those in the recipient list.</div>`
   showModal(modalTitle, modalBody, function ok() {
-    var modal = this;
-    var modalContainer = modal.modal;
-    var recipients = modalContainer.find('#pgp-recipient').val().trim().split('\n').map(i=>i.trim());
-    var safeComposer = modalContainer.find('#modmail-safecomposer')
+    var modalContent = $('#gmailJsModalWindowContent');
+    var recipients = modalContent.find('#pgp-recipient').val().trim().split('\n').map(i=>i.trim());
+    var safeComposer = modalContent.find('#modmail-safecomposer')
     var email = safeComposer.val()
     pgp.encrypt(recipients, email).then(function(val) {
       editable.html(val.replace(/\n/g,'<br>'))
-      modal.remove();
+      gmail.tools.remove_modal_window();
     }).catch(function(err) {
       alert(err);
     });
