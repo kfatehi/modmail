@@ -4,18 +4,6 @@ require('gmail-js'); // accesible as window.Gmail
 module.exports = function($) {
   var api = Gmail();
 
-  api.tools.addButtonToContainer = function(messageContainer, content_html, onClickFunction, styleClass) {
-    var btn = $(document.createElement('div'));
-    btn.attr('class','T-I J-J5-Ji T-I-Js-IF aaq T-I-ax7 L3 ')
-    if (styleClass) btn.addClass(styleClass);
-    btn.attr('role', 'button')
-    btn.css({ '-webkit-user-select': 'none' });
-    btn.html(content_html)
-    btn.click(onClickFunction)
-    messageContainer.find('td.gH.acX').prepend(btn);
-    return btn;
-  }
-
   api.tools.add_menu_button = function(menu, label, onClickHandler) {
     var btn = $('<div>').click(onClickHandler.bind(btn))
     btn.attr('class', 'J-N J-Ks')
