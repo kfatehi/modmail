@@ -4,24 +4,19 @@ var ipc = require('electron').ipcRenderer;
 
 module.exports.init = (api) => {
   api.gmail.observe.on('load', ()=>{
-
     api.gmail.observe.on("refresh", ()=> {
-      console.log('refresh');
       setBadgeToUnreadInboxCount();
     });
 
     api.gmail.observe.on("new_email", ()=> {
-      console.log('new mail');
       setBadgeToUnreadInboxCount();
       notifyNewMail();
     });
 
     api.gmail.observe.on("read", ()=> {
-      console.log('read');
       setBadgeToUnreadInboxCount();
     });
 
-    console.log('loaded');
     setBadgeToUnreadInboxCount();
   });
 
