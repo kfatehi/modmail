@@ -64,11 +64,11 @@ function initEmbedder(account, webview) {
   }
 }
 
-function initInjection(account, tools) {
+function initInjection(tools, account, ...args) {
   if (account.mods) {
     account.mods.forEach(function(mod) {
       // now we load injection component of our modules
-      requireInjection(mod).init(tools)
+      requireInjection(mod).init(tools, account, ...args)
       console.log(`${account.id}: ${mod.id} initialized injection`);
     })
   }
