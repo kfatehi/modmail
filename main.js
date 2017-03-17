@@ -7,9 +7,6 @@ const core = require('./src/core/main-process');
 const name = electron.app.getName();
 const BrowserWindow = electron.BrowserWindow;  // Module to create native browser window.
 
-// Report crashes to our server.
-electron.crashReporter.start();
-
 // Quit when all windows are closed.
 app.on('window-all-closed', function() {
   // On OS X it is common for applications and their menu bar
