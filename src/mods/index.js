@@ -37,7 +37,7 @@ function modPath(mod) {
   }
 }
 
-function initMain(config) {
+function initMain(config, mainWindow) {
   const sharedState = {};
   config.accounts.forEach((account) => {
     if (account.mods) {
@@ -46,7 +46,7 @@ function initMain(config) {
         // requireMain means we are requiring the main-process component
         const prefix = genIpcPrefix(account, mod);
         const ipcProxy = genIpcProxy(prefix);
-        requireMain(mod).init(prefix, mod.config, ipcProxy, config, sharedState);
+        requireMain(mod).init(prefix, mod.config, ipcProxy, config, sharedState, mainWindow);
         console.log(`${account.id}: ${mod.id} initialized main-process`);
       })
     }

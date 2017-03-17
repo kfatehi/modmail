@@ -20,7 +20,7 @@ module.exports.init = function() {
   // and load the index.html of the app.
   mainWindow.loadURL(`file://${__dirname}/../../../index.html`);
 
-  mods.initializeModComponents('main-process', [config.load()])
+  mods.initializeModComponents('main-process', [config.load(), mainWindow])
 
   if (process.platform == 'darwin') {
     mainWindow.on('close', function(event) {
