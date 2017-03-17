@@ -54,11 +54,9 @@ function initAccountsAndTabs(config) {
       shell.openExternal(e.url);
     });
 
+    setTimeout(()=> switchTo(config.accounts[0]), 0);
   })
 
-  setTimeout(function() {
-    switchTo(config.accounts[0]);
-  }, 0);
 }
 
 function switchTo(account) {
