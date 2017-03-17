@@ -4,7 +4,7 @@ This is a Gmail wrapper with extreme moddability. It's a lot like Mailplane exce
 
 Note that Modmail is quite unpolished when it comes to user interface and other niceties. The primary goal was the design of a plugin system ("mods"), the primary one of which is PGP support. For something far more polished, check out [wmail](http://thomas101.github.io/wmail/). I support this because it, too, is open source, crossplatform. Conveniently it is also built with electron. I may even start contributing there and deprecate Modmail, so do check it out!
 
-![](https://raw.githubusercontent.com/kfatehi/modmail/master/images/logo.png)
+![](/../screenshots/screenshots/main.png?raw=true)
 
 ## Features
 
@@ -78,6 +78,12 @@ const readFile = (fp) => require('fs').readFileSync(fp).toString();
   }
 }
 ```
+
+This module modifies your gmail user interface, giving you the ability to encrypt and decrypt.
+
+![](/../screenshots/screenshots/encrypt.png?raw=true)
+
+![](/../screenshots/screenshots/decrypt.png?raw=true)
 
 ### autologin
 
