@@ -9,6 +9,8 @@ ipc.on('init-injection', function(event, account) {
   window.gmail = require('./gmail')(window.$)
 
   let tools = {
+    gmail,
+
     // react to dom events
     mutations: initMutationTool(),
 

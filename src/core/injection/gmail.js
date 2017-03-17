@@ -1,8 +1,11 @@
-require('gmail-js'); // accesible as window.Gmail
+require('gmail-js'); // sets window.Gmail
 
-// custom gmail related functions follow
 module.exports = function($) {
   var api = Gmail();
+
+  // some custom functions and/or overrides follow
+  // these would be functions that should probably be
+  // upstreamed to the gmail-js project eventually
 
   api.tools.add_menu_button = function(menu, label, onClickHandler) {
     var btn = $('<div>').click(onClickHandler.bind(btn))
