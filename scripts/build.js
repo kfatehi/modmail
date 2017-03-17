@@ -1,11 +1,11 @@
 "use strict";
 
 const packager = require('electron-packager')
-const pkg = require('../package').version
+const pkg = require('../package');
 
 packager({
   name: 'Modmail',
-  version: '0.37.2', // electron version
+  electronVersion: pkg.dependencies.electron,
   arch: 'x64',
   dir: __dirname+'/../',
   platform: require('os').platform(),
@@ -14,9 +14,9 @@ packager({
   overwrite: true,
   prune: true,
   out: __dirname+'/../out',
-  'app-copyright': 'Keyvan Fatehi, 2016',
-  'app-version': pkg.version,
-  'build-version': pkg.version,
+  appCopyright: 'Keyvan Fatehi, 2016',
+  appVersion: pkg.version,
+  buildVersion: pkg.version,
 }, (err, paths) => {
   if (err) throw err;
   console.log(paths);
