@@ -96,6 +96,20 @@ This module requires a **config**. Example block:
 }
 ```
 
+### notify
+
+Features:
+* Sets the Dock icon badge to the cumulative number of unread messages across all accounts for which it is enabled (macOS & Ubuntu/Unity only)
+* Desktop notification for every new email
+
+This module requires a **config**. Example block:
+
+```js
+{
+  id: 'notify'
+}
+```
+
 ## Module Anatomy
 
 Every module is composed of 3 components: **main-process**, **embedder**, and **injection**
