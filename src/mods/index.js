@@ -1,4 +1,7 @@
 'use strict';
+const DEFAULT_EMBEDDER = require('./default-embedder');
+const { genIpcPrefix, genIpcProxy } = require('./utils');
+
 module.exports.initializeModComponents = function(type, args) {
   if (type === 'main-process') {
     initMain.apply(this, args)
@@ -14,7 +17,11 @@ function requireMain(mod) {
 }
 
 function requireEmbedder(mod) {
-  return require(`${modPath(mod)}/embedder`)
+  try {
+    return require(`${modPath(mod)}/embedder`)
+  } catch (e) {
+    return DEFAULT_EMBEDDER;
+  }
 }
 
 function requireInjection(mod) {
@@ -30,21 +37,16 @@ function modPath(mod) {
   }
 }
 
-// this value scopes IPC calls of this mod and account combination.
-// it's necessary because all main-process components for all mods
-// are loaded into the same (main) process.
-function genIpcPrefix(account, mod) {
-  return `${account.id}.${mod.id}.`
-}
-
 function initMain(config) {
+  const sharedState = {};
   config.accounts.forEach((account) => {
     if (account.mods) {
       account.mods.forEach((mod) => {
         // here we load modules we want to use
         // requireMain means we are requiring the main-process component
-        let prefix = genIpcPrefix(account, mod);
-        requireMain(mod).init(prefix, mod.config);
+        const prefix = genIpcPrefix(account, mod);
+        const ipcProxy = genIpcProxy(prefix);
+        requireMain(mod).init(prefix, mod.config, ipcProxy, config, sharedState);
         console.log(`${account.id}: ${mod.id} initialized main-process`);
       })
     }
