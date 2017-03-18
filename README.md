@@ -13,7 +13,7 @@ Note that Modmail is quite unpolished when it comes to user interface and other 
 
 ## Config
 
-Modmail expects `~/.modmail.config.js` to exist with following semantics:
+Modmail expects `~/.modmail.config.js` to exist with a list of accounts. Each account can optoinally take a list of mods.
 
 ```js
 module.exports = {
@@ -39,18 +39,13 @@ module.exports = {
 }
 ```
 
-## Included Modules
+## Included Mods
 
 ### pgp
 
-Features:
 * Decrypt emails
 * Encrypt emails
 
-Wishlist:
-* Encrypted Attachments
-
-This module requires a **config**. Example module block:
 
 ```js
 'use strict';
@@ -87,12 +82,9 @@ This module modifies your gmail user interface, giving you the ability to encryp
 
 ### autologin
 
-Features:
 * Automatic login by filling fields and submitting form
 * Rate limited to prevent triggering captcha and security issues
 * Detects captcha and gives user a chance to enter it and sign in
-
-This module requires a **config**. Example block:
 
 ```js
 {
@@ -106,23 +98,26 @@ This module requires a **config**. Example block:
 
 ### notify
 
-Features:
 * Sets the Dock icon badge to the cumulative number of unread messages across all accounts for which it is enabled (macOS & Ubuntu/Unity only)
 * Desktop notification for every new email
 
-This module requires a **config**. Example block:
+```js
+{ id: 'notify' }
+```
+
+### adblock
+
+* uses CSS to block the ads at the top of the inbox that pretend to be emails
 
 ```js
-{
-  id: 'notify'
-}
+{ id: 'adblock' }
 ```
 
 ## Module Anatomy
 
 Every module is composed of 3 components: **main-process**, **embedder**, and **injection**
 
-Gmail itself runs in an electron `<webview>` embedded by the core **embedder**. See `index.html` to view the embedder's DOM.
+Gmail itself runs in an electron `<webview>` embedded by the **embedder**. See `index.html` to view the embedder's DOM.
 
 The webview is preloaded with the core **injection** which subsequently injects each module's injection component.
 
@@ -134,9 +129,9 @@ The main process attempts to decrypt the ciphertext and then IPC's back the way 
 
 We do this because we don't want the private key anywhere near the wild web code. Using IPC, we can bring the ciphertext to the key instead of bringing the key to the ciphertext where it might be at risk.
 
-## Developing Modules
+## Developing Mods
 
-To develop your own module, add it to your config using the `path` key. Make sure to set an `id` key too so that your ipc prefix is setup correctly. See the `pgp` mod in the `src/mods` directory for examples of each component.
+To develop your own module, add it to your config using the `path` key. Make sure to set an `id` key too so that your ipc prefix is setup correctly. See the existing mods in the `src/mods` directory for examples of the three components.
 
 As you edit your embedder and injection components, you can hit CMD-R (Ctrl-R on Windows and Linux) to reload! You can also open the inspector (see the View menu for the hotkey) to see your embedder and injection developer tools!
 
