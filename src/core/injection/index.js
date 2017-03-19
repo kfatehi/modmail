@@ -83,3 +83,26 @@ function addStylesheetFromFile(path) {
     $('body').append(`<style type="text/css" media="all">${css}</style>`);
   });
 }
+
+// handle action links like these by monkeypatching window.open
+// https://github.com/blog/1891-view-issue-pull-request-buttons-for-gmail
+window._open = window.open;
+window.open = (url, target) => {
+  if (url) {
+    window._open(url, target);
+  } else {
+    return {
+      document: {
+        close:()=>{},
+        write: (meta)=>{
+          try {
+            let url = $(meta).attr('content').match(/url=(.+)$/)[1];
+            window._open(url, target);
+          } catch (e) {
+
+          }
+        }
+      }
+    }
+  }
+};
