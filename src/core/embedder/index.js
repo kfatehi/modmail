@@ -80,10 +80,11 @@ function createTab(account) {
 }
 
 function createWebview(account) {
+  let app = account.app || "mail";
   let webview = $('<webview>')
   .addClass('gmail')
   .attr('id', `gmail-${account.id}`)
-  .attr('src', "https://mail.google.com")
+  .attr('src', `https://${app}.google.com`)
   .attr('preload', preload)
   .attr('partition', `persist:${account.id}`)
   return webview;

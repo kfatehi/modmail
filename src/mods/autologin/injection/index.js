@@ -1,17 +1,29 @@
 "use strict";
 
 module.exports.init = (tools) => {
-  var form = $('form#gaia_loginform');
 
+  var config = tools.getModConfig('autologin')
+
+  var app = window.location.host.split('.')[0]
+
+  var form;
+
+  if ( app === "accounts" ) {
+    form = $('form.RFjuSb');
+    console.log('found form');
+  } else {
+    form = $('form#gaia_loginform');
+  }
+
+
+  performAutologin(app, form, config.email, config.password);
+}
+
+function performAutologin(app, form, email, password) {
   if (form.length === 0) {
     return false;
   }
-  var config = tools.getModConfig('autologin')
 
-  performAutologin(form, config.email, config.password);
-}
-
-function performAutologin(form, email, password) {
   let getTries = () =>
     parseInt(localStorage['modmail-autologin-tries']) || 0
 
@@ -25,13 +37,23 @@ function performAutologin(form, email, password) {
 
   if (getTries() < maxtries) {
     // we are at the login form!
-    form.find('input#Email').val(email);
-    form.find('input#Passwd').val(password);
+    console.log('autologin');
+    if ( app === "accounts" ) {
+      form.find('input[name=password]').val(password);
+      console.log('filled passwd');
+    } else {
+      form.find('input#Email').val(email);
+      form.find('input#Passwd').val(password);
+    }
 
     if ($('input#logincaptcha').length === 1) {
       alert('solve the captcha and sign in');
     } else {
-      form.submit();
+      if ( app === "accounts" ){
+        form.find('#passwordNext').get(0).click()
+      } else {
+        form.submit();
+      }
     }
 
   } else {

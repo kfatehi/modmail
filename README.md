@@ -10,6 +10,7 @@ Note that Modmail is quite unpolished when it comes to user interface and other 
 
 * Modding engine
 * Multiple accounts
+* Inbox App support
 
 ## Config
 
@@ -29,6 +30,7 @@ module.exports = {
   },{
     id: 'business',
     label: "Business",
+    app: "inbox", // can be "mail" for normal gmail, or "inbox". actually translates to https://${app}.google.com so you can probably use it for calendar and stuff too, but i have not tried that
     mods: [
       // you can also develop your own mods, just specify the path
       // development is easy. use the Reload and Inspector features to build mods quickly
