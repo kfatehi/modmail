@@ -2,7 +2,7 @@ body {
   background-color: #F5F5F5
 }
 
-.gmail {
+.viewport {
   position: absolute;
   left: 0;
   right: 0;
@@ -11,21 +11,22 @@ body {
   z-index: 1;
 }
 
-.gmail.active {
+.viewport.active {
   z-index: 9;
 }
 
 .tabs {
+  display: flex;
   position: absolute;
   left: 0;
   top: 0;
-  right; 0;
+  right: 0;
   bottom: 32px;
   -webkit-user-select: none;
 }
 
 .tab {
-  width: 200px;
+  flex: 1;
   height: 32px;
   display: inline-block;
   background-color: #ccc;

@@ -27,7 +27,7 @@ function init() {
 
   if (config.mailto) {
     ipcRenderer.on('open-mailto-link', (event, data) => {
-      const target = $(`webview#gmail-${config.mailto}`).get(0)
+      const target = $(`webview#${config.mailto}`).get(0)
       target.send('open-mailto-link', data);
     });
   }
@@ -70,8 +70,8 @@ function switchTo(account) {
   $('.tab').removeClass('active');
   $(`.tab#tab-${account.id}`).addClass('active');
   // surface the webview
-  $('.gmail').removeClass('active');
-  let webview = $(`.gmail#gmail-${account.id}`).addClass('active').get(0);
+  $('.viewport').removeClass('active');
+  let webview = $(`.viewport#${account.id}`).addClass('active').get(0);
   // set title to that of surfaced webview
   $('title').text(webview.getTitle());
 }
@@ -87,17 +87,18 @@ function createTab(account) {
 
 function createWebview(account) {
   let app = account.app || "mail";
+  let url = account.url || `https://${app}.google.com`;
   let webview = $('<webview>')
-  .addClass('gmail')
-  .attr('id', `gmail-${account.id}`)
-  .attr('src', `https://${app}.google.com`)
+  .addClass('viewport')
+  .attr('id', account.id)
+  .attr('src', url)
   .attr('preload', preload)
   .attr('partition', `persist:${account.id}`)
   return webview;
 }
 
 function toggleWebviewDevTools() {
-  $('webview.gmail').each((i, el) => {
+  $('webview.viewport').each((i, el) => {
     if ($(el).hasClass('active')) {
       if (el.isDevToolsOpened()) {
         el.closeDevTools()
