@@ -3,13 +3,15 @@ const electron = require('electron');
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;  // Module to create native browser window.
 const mods = require('../../mods');
-const config = require('../../config');
+const loadConfig = require('../../config').load;
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 
 module.exports.init = function() {
+  const config = loadConfig();
+
   // Create the browser window.
   mainWindow = new BrowserWindow({
     icon: `${__dirname}/../../../images/logo.png`,

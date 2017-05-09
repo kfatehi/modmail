@@ -4,13 +4,12 @@ const preload = "src/core/injection/index.js";
 const electron = require('electron');
 const shell = electron.shell;
 const ipcRenderer = electron.ipcRenderer;
-const configLoader = require('./src/config')
+const loadConfig = require('./src/config').load;
 
 window.$ = require('jquery');
 
 function init() {
-  let config = configLoader.load()
-
+  let config = loadConfig();
 
   ipcRenderer.on('toggle-webview-inspector', toggleWebviewDevTools)
 
