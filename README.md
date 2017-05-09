@@ -18,6 +18,7 @@ Modmail expects `~/.modmail.config.js` to exist with a list of accounts. Each ac
 
 ```js
 module.exports = {
+  mailto: "personal", // (optional) register to handle mailto links using account id "personal" (mac only right now)
   accounts: [{
     id: 'personal', // used to persist the session. omit special characters/spaces
 

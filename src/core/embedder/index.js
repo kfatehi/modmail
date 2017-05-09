@@ -24,6 +24,13 @@ function init() {
     
     newUserDiv.show();
   }
+
+  if (config.mailto) {
+    ipcRenderer.on('open-mailto-link', (event, data) => {
+      const target = $(`webview#gmail-${config.mailto}`).get(0)
+      target.send('open-mailto-link', data);
+    });
+  }
 }
 
 function initAccountsAndTabs(config) {

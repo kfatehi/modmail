@@ -32,6 +32,18 @@ ipc.on('init-injection', function(event, account) {
   mods.initializeModComponents('injection', [tools, account]);
 });
 
+ipc.on('open-mailto-link', function(event, data) {
+  gmail.observe.on('compose', (compose, type)=>{
+    gmail.observe.off('compose');
+    setTimeout(()=>{
+      compose.to(data.to);
+      compose.subject(data.subject);
+      compose.body(data.body);
+    });
+  });
+  gmail.compose.start_compose();
+});
+
 function initMutationTool() {
   let handlers = [];
 
