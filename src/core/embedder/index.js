@@ -4,7 +4,12 @@ const preload = "src/core/injection/index.js";
 const electron = require('electron');
 const shell = electron.shell;
 const ipcRenderer = electron.ipcRenderer;
-const loadConfig = require('./src/config').load;
+const configModule = require('./src/config');
+const loadConfig = configModule.load;
+const configPath = configModule.path;
+const fs = require('fs');
+const path = require('path');
+const marked = require('marked');
 
 window.$ = require('jquery');
 
@@ -20,8 +25,13 @@ function init() {
     initAccountsAndTabs(config)
   } else {
 
-    newUserDiv.find('#config-path').text(configLoader.path)
-    
+    $('.tabs').hide();
+    $('.webviews').hide();
+    newUserDiv.find('#config-path').text(configPath);
+    let readme = $(marked(fs.readFileSync(path.join('README.md')).toString()));
+    readme.find('img').remove();
+    readme.find('a').attr('target', 'blank');
+    newUserDiv.find('#readme').append(readme);
     newUserDiv.show();
   }
 

@@ -14,7 +14,17 @@ Note that Modmail is quite unpolished when it comes to user interface and other 
 
 ## Config
 
-Modmail expects `~/.modmail.config.js` to exist with a list of accounts. Each account can optoinally take a list of mods.
+Modmail expects `~/.modmail.config.js` to exist with a list of accounts.
+
+Each account must have an `id` and `label`. The `id` is used for persisting the account's browser session, and the label is what you see on the tab bar.
+
+Each account can optionally take an `app` (defailts to gmail). This is the subdomain of Gmail you wish to load (e.g. "inbox" would load inbox.google.com)
+
+Alternatively, you can set a `url` to load. For example, I use this to load my ownCloud calendar.
+
+Each account can optionally take a list of mods.
+
+See the example below:
 
 ```js
 module.exports = {
@@ -38,6 +48,10 @@ module.exports = {
       // tip: I find the fastest worfklow is to hit Ctrl-R/Cmd-R to from within the injected inspector to refresh without having to re-open the inspector
       { id: 'my-mod', path: 'path/to/project' }
     ]
+  },{
+    id: 'owncloud-cal',
+    label: 'Calendar',
+    url: 'my.owncloud.server/calendar'
   }],
 }
 ```
