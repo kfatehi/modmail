@@ -31,6 +31,13 @@ function init() {
       target.send('open-mailto-link', data);
     });
   }
+
+  ipcRenderer.on('previous-tab', () => {
+    switchTo(config.accounts[activeTabIndex()-1]);
+  });
+  ipcRenderer.on('next-tab', () => {
+    switchTo(config.accounts[activeTabIndex()+1]);
+  });
 }
 
 function initAccountsAndTabs(config) {
@@ -65,7 +72,12 @@ function initAccountsAndTabs(config) {
 
 }
 
+function activeTabIndex() {
+  return $('.tab').toArray().findIndex(t=>$(t).hasClass('active'));
+}
+
 function switchTo(account) {
+  if (!account) return;
   // highlight the tab
   $('.tab').removeClass('active');
   $(`.tab#tab-${account.id}`).addClass('active');

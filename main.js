@@ -51,6 +51,22 @@ app.on('ready', function() {
           }
         },
         {
+          label: "Previous Tab",
+          accelerator: "CmdOrCtrl+Shift+[",
+          click: function() {
+            var focusedWindow = BrowserWindow.getFocusedWindow();
+            focusedWindow.webContents.send('previous-tab');
+          }
+        },
+        {
+          label: "Next Tab",
+          accelerator: "CmdOrCtrl+Shift+]",
+          click: function() {
+            var focusedWindow = BrowserWindow.getFocusedWindow();
+            focusedWindow.webContents.send('next-tab');
+          }
+        },
+        {
           label: 'Toggle Full Screen',
           accelerator: (function() {
             if (process.platform == 'darwin')
