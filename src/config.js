@@ -7,6 +7,7 @@ module.exports = {
     try {
       return require(searchPath);
     } catch (e) {
+      console.log(e);
       return { accounts: [] }
     }
   }
