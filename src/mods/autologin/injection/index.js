@@ -1,29 +1,61 @@
 "use strict";
 
 module.exports.init = (tools) => {
+  const config = tools.getModConfig('autologin')
 
-  var config = tools.getModConfig('autologin')
-
-  var app = window.location.host.split('.')[0]
-
-  var form;
-
-  if ( app === "accounts" ) {
-    form = $('form.RFjuSb');
-    console.log('found form');
-  } else {
-    form = $('form#gaia_loginform');
+  const createStrategy = ({selector, steps}) => {
+    let step = 0;
+    const getElement = () => $(selector);
+    const match = () => getElement().length > 0;
+    const next = () => {
+      steps[step](getElement(), config);
+      step++;
+    }
+    return { match, next };
   }
 
+  const defaultStrategies = [
+    createStrategy({
+      selector: 'form.RFjuSb',
+      steps: [
+        (form, {password}) => form.find('input[name=password]').val(password),
+        form => form.find('#passwordNext').get(0).click()
+      ]
+    }),
+    createStrategy({
+      selector: 'form#gaia_loginform',
+      steps: [
+        (form, {email, password}) => {
+          form.find('input#Email').val(email);
+          form.find('input#Passwd').val(password);
+        },
+        form => form.submit()
+      ]
+    }),
+    createStrategy({
+      selector: 'form[name=login]',
+      steps: [
+        (form, {user, password}) => {
+          form.find('input#user').val(user);
+          form.find('input#password').val(password);
+        },
+        form => form.find('input[type=submit]').click()
+      ]
+    })
+  ]
 
-  performAutologin(app, form, config.email, config.password);
+  const strategy = defaultStrategies.reduce((result, strat)=>{
+    if (result) return result;
+    else if (strat.match()) return strat;
+  }, null);
+
+  if (strategy)
+    executeAutologinStrategy(strategy);
+  else
+    console.log('no autologin strategy matched');
 }
 
-function performAutologin(app, form, email, password) {
-  if (form.length === 0) {
-    return false;
-  }
-
+function executeAutologinStrategy(strategy) {
   let getTries = () =>
     parseInt(localStorage['modmail-autologin-tries']) || 0
 
@@ -34,26 +66,15 @@ function performAutologin(app, form, email, password) {
 
   var maxtries = 2;
 
-
   if (getTries() < maxtries) {
     // we are at the login form!
     console.log('autologin');
-    if ( app === "accounts" ) {
-      form.find('input[name=password]').val(password);
-      console.log('filled passwd');
-    } else {
-      form.find('input#Email').val(email);
-      form.find('input#Passwd').val(password);
-    }
+    strategy.next();
 
     if ($('input#logincaptcha').length === 1) {
       alert('solve the captcha and sign in');
     } else {
-      if ( app === "accounts" ){
-        form.find('#passwordNext').get(0).click()
-      } else {
-        form.submit();
-      }
+      strategy.next();
     }
 
   } else {
