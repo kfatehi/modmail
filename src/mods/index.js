@@ -53,12 +53,12 @@ function initMain(config, mainWindow) {
   })
 }
 
-function initEmbedder(account, webview) {
+function initEmbedder(account, ...args) {
   if (account.mods) {
     account.mods.forEach(function(mod) {
       // initialize the embedder component of each module
       let prefix = genIpcPrefix(account, mod);
-      requireEmbedder(mod).init(prefix, webview);
+      requireEmbedder(mod).init(prefix, ...args);
       console.log(`${account.id}: ${mod.id} initialized embedder`);
     })
   }
