@@ -41,3 +41,7 @@ body {
 .tab.active {
   background-color: #eee;
 }
+
+.tab .count {
+  padding-left: 0.2em;
+}

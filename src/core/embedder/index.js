@@ -67,7 +67,7 @@ function initAccountsAndTabs(config) {
 
     webview.addEventListener("dom-ready", () => {
 
-      mods.initializeModComponents('embedder', [account, webview])
+      mods.initializeModComponents('embedder', [account, webview, tab])
 
       // then send the init signal
       webview.send('init-injection', account);
@@ -100,10 +100,12 @@ function switchTo(account) {
 
 function createTab(account) {
   let label = $('<span>').addClass('label').text(account.label);
+  let count = $('<span>').addClass('count');
   let tab = $('<div>')
   .attr('id', `tab-${account.id}`)
   .addClass('tab')
   .append(label)
+  .append(count)
   return tab;
 }
 
